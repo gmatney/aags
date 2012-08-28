@@ -1,0 +1,369 @@
+The Server will have an interface to be able to at all times request:
+	A. Get units on a particular territory
+	And loaded state
+	B. Get IPC value of a particular territory
+	C. Get current ownership of a particular territory
+	D. Get current player information
+	E. Get current IPC income (real and adjusted (as if you could get income when capital taken))
+	F. Get victory City counts
+	G. Get Combat Unit summary
+	H. Request Game history
+	I. Get territory list
+	J. Get territories adjacent to territory
+	K. Get current time limits
+	L. Get current game time
+	M. Get optional rule status for game
+	N. Request Game being saved
+
+Before each phase the server will send a request for orders to the correct player.
+
+
+Communications:
+	A. Register to play.
+	Request:
+	- Team (random, Axis, or Allies)
+	- Or Combat Force (Random, Soviet Union, Germany, United Kingdom, Japan, United States)
+	- Options (Will  be determined by having the most votes, fails on a tie)
+	Fighter factory defense
+	Neutral Sea zone near turkey
+	Standard Victory versus Full Victory
+	- Previous game history and Campaigns
+	Use Saved Game (all players must choose same saved game)(can have prioritized list perhaps)
+	Response:
+	- Reject
+	- Accept
+	Combat Force result
+	Contact info on team mates
+	Time limits quanitified
+
+	B. Send Purchase instructions
+	//NOTE: May have to declare where factory repair is occuring.
+	<?xml version="1.0"?>
+	<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="PurchaseRequest">
+	 <xs:complexType>
+	<xs:sequence>
+	<xs:element name="OrderItem" maxOccurs="unbounded">
+	<xs:complexType>
+	<xs:sequence>
+	<xs:element name="ItemName">
+	<xs:restriction base="xs:string">
+	<xs:enumeration value="INFANTRY"/>
+	<xs:enumeration value="ARTILLERY"/>
+	<xs:enumeration value="TANK"/>
+	<xs:enumeration value="ANTIAIRCRAFT ARTILLERY"/>
+	<xs:enumeration value="FIGHTER"/>
+	<xs:enumeration value="BOMBER"/>
+	<xs:enumeration value="AIRCRAFT CARRIER"/>
+	<xs:enumeration value="BATTLESHIP"/>
+	<xs:enumeration value="CRUISER"/>
+	<xs:enumeration value="DESTROYER"/>
+	<xs:enumeration value="SUBMARINE"/>
+	<xs:enumeration value="TRANSPORT"/>
+	<xs:enumeration value="FACTORY"/>
+	<xs:enumeration value="FACTORY REPAIR"/>
+	</xs:restriction>
+	</xs:simpleType>
+	</xs:element>
+	<xs:element name="Quantity" type="xs:positiveInteger"/>
+	</xs:sequence>
+	</xs:complexType>
+	</xs:element>
+	</xs:sequence>
+	 </xs:complexType>
+	</xs:element>
+	</xs:schema>
+
+	- Reject 
+	instructions from out of order combat force
+	Order is for more IPC than you have
+	Time out rejection, no orders placed
+	Move on to next phase: Y
+	No longer own capital city 
+	Move on to next phase: Y
+	Industrial Complex repair cost too high (if trying to repair more than damages)
+	- Accept.
+	Send remainder IPC
+	C. Send Combat instructions
+	Transport logic:  (think empty transport near norway, needing to pick up units in UK to fight in western europe, but fight needs to happen in uk waters)
+	Aircraft carrier logic (think  fighters from mexico to enemeny midway needing somewhere to land)
+	Transports and aircraft carrier movement needs to resolve first.
+	<?xml version="1.0"?>
+	<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="BattlePlanRequest">
+	 <xs:complexType>
+	<xs:sequence>
+	<xs:element name="UnitOrders" maxOccurs="unbounded">
+	<xs:complexType>
+	<xs:sequence>
+	<xs:element name="UnitType">
+	<xs:simpleType>
+	<xs:restriction base="xs:string">
+	<xs:enumeration value="INFANTRY"/>
+	<xs:enumeration value="ARTILLERY"/>
+	<xs:enumeration value="TANK"/>
+	<xs:enumeration value="FIGHTER"/>
+	<xs:enumeration value="BOMBER"/>
+	<xs:enumeration value="AIRCRAFT CARRIER"/>
+	<xs:enumeration value="BATTLESHIP"/>
+	<xs:enumeration value="CRUISER"/>
+	<xs:enumeration value="DESTROYER"/>
+	<xs:enumeration value="SUBMARINE"/>
+	<xs:enumeration value="TRANSPORT"/>
+	</xs:restriction>
+	</xs:simpleType>
+	</xs:element>
+	<xs:element name="Quantity"              type="xs:positiveInteger"/>
+	<xs:element name="CurrentlyPositionedAt" type="TerritoryType"/>
+	<xs:element name="AttackPath"            type="MovementPathType"/>
+	<xs:element name="SpecialInstructions"   type="SpecialInstructionType"   minOccurs="0/>
+	</xs:sequence>
+	</xs:complexType>
+	</xs:element>
+	</xs:sequence>
+	 </xs:complexType>
+	</xs:element>
+	</xs:schema>	
+	DEFENSE OPTIONS:
+	submarine surprise attack
+	submarine submerge
+	stategic bombing fighter defense
+	Round Loss choices
+	Order is important
+	Note Blitzing areas
+	- Accept
+	-Reject
+	Not enough units to send
+	Note if Ally has units in the territory
+	Note how many units they have there
+	Units cannot move that far
+	No place for planes to land
+	Destroyer present (prevents sub from going through)
+	Cannot bombard (must fight ships (not sub, not transport)
+	Unit regestered for more than one battle(excludes blitzing)
+	Bomber can't reach
+	D. Battle continuation iterations
+	Sends the results of Bombing raids. (if Any)
+	Amphibous Assault 
+	Sea Combat  (ask if you want to continue after first fight if able and enemy still present)(Attacker retreats option)
+	Bombardment 
+	Land Combat (land must approach even if sea side stopped)(Attacker retreats option)
+	(ask if you want to continue after first fight if able and enemy still present) (Attacker retreats option)
+	Outcomes sent:  All units lost, attacker loses, defender loses
+	At end server sends IPC income changes, Victory City scores
+	E. Sending planes home
+	Server Notifies which planes crashed because they had no where to land.
+	Server Notifies which planes landed in the only spots they were able to land.
+	Server Notifies which planes need landing instructions and which territory or sea zone they are eligible to land in.
+	PlaneReturnDestination
+	Accept
+	Reject
+	Can't make it to that territory or sea zone
+	If choice isn't made in time, the server will notify which random eligible territory that pilot landed in.
+	
+	F. Non-combat Move Order
+	- Accept
+	- Reject 
+	Not enough units
+	Units can't move that far
+	Moving into enemy territory not allowed
+	-Times Up
+	G.  Send order for where new units will go
+	-Accept
+	-Reject
+	Not enough units bought
+	Not enough capacity for deployment region
+	No factory in area
+	You don't own factory in area
+	Unit not allowed in that sea zone.
+	Not a sea unit
+	Bomber not allowed on Aircraft Carrier
+	-Times up, refund amount
+	H. Sever sends
+	New income amounts and that which was collected
+	What the victory city amounts are
+	I. If after United States Turn:
+	Whether either side has achevied victory (and victory number playing to)
+	
+	-----------------------------
+	Order of Play (Who's turn it can be).
+	1. Soviet Union
+	2. Germany
+	3. United Kingdom
+	4. Japan
+	5. United States
+	6. Check for Victory 
+	
+	
+	-----------------------
+	Turn Sequence
+	1. Purchase Units
+	2. Combat Move
+	3. Conduct combat
+	4. Noncombat Move
+	5. Mobilize new Units
+	6. Collect income
+	------------------------------
+	
+	
+	
+	
+	COMMON XSD elements and types
+	
+	
+	
+	
+	<xs:element name="SpecialInstructionType">
+	  <xs:simpleType>
+	    <xs:restriction base="xs:string">
+	<xs:enumeration value="Strategic Bombing"/>
+	<xs:enumeration value="Strategic Bombing Fighter Support"/>
+	<xs:enumeration value="Navel Bombardment"/>
+	<xs:enumeration value="Submarine Surprise Attack"/>
+	    </xs:restriction>
+	  </xs:simpleType>
+	</xs:element>
+	
+	
+	<xs:complexType name="MovementPathType">
+	 <xs:sequence>
+	<xs:element name="Place" maxOccurs="unbounded" type="TerritoryType">
+	 </xs:sequence>
+	</xs:complexType>
+	
+	
+	
+	<xs:element name="TerritoryType">
+	  <xs:simpleType>
+	    <xs:restriction base="xs:string">
+	<xs:enumeration value="Sea Zone 1"/>
+	<xs:enumeration value="Sea Zone 2"/>
+	<xs:enumeration value="Sea Zone 3"/>
+	<xs:enumeration value="Sea Zone 4"/>
+	<xs:enumeration value="Sea Zone 5"/>
+	<xs:enumeration value="Sea Zone 6"/>
+	<xs:enumeration value="Sea Zone 7"/>
+	<xs:enumeration value="Sea Zone 8"/>
+	<xs:enumeration value="Sea Zone 9"/>
+	<xs:enumeration value="Sea Zone 10"/>
+	<xs:enumeration value="Sea Zone 11"/>
+	<xs:enumeration value="Sea Zone 12"/>
+	<xs:enumeration value="Sea Zone 13"/>
+	<xs:enumeration value="Sea Zone 14"/>
+	<xs:enumeration value="Sea Zone 15"/>
+	<xs:enumeration value="Sea Zone 16"/>
+	<xs:enumeration value="Sea Zone 17"/>
+	<xs:enumeration value="Sea Zone 18"/>
+	<xs:enumeration value="Sea Zone 19"/>
+	<xs:enumeration value="Sea Zone 20"/>
+	<xs:enumeration value="Sea Zone 21"/>
+	<xs:enumeration value="Sea Zone 22"/>
+	<xs:enumeration value="Sea Zone 23"/>
+	<xs:enumeration value="Sea Zone 24"/>
+	<xs:enumeration value="Sea Zone 25"/>
+	<xs:enumeration value="Sea Zone 26"/>
+	<xs:enumeration value="Sea Zone 27"/>
+	<xs:enumeration value="Sea Zone 28"/>
+	<xs:enumeration value="Sea Zone 29"/>
+	<xs:enumeration value="Sea Zone 30"/>
+	<xs:enumeration value="Sea Zone 31"/>
+	<xs:enumeration value="Sea Zone 32"/>
+	<xs:enumeration value="Sea Zone 33"/>
+	<xs:enumeration value="Sea Zone 34"/>
+	<xs:enumeration value="Sea Zone 35"/>
+	<xs:enumeration value="Sea Zone 36"/>
+	<xs:enumeration value="Sea Zone 37"/>
+	<xs:enumeration value="Sea Zone 38"/>
+	<xs:enumeration value="Sea Zone 39"/>
+	<xs:enumeration value="Sea Zone 40"/>
+	<xs:enumeration value="Sea Zone 41"/>
+	<xs:enumeration value="Sea Zone 42"/>
+	<xs:enumeration value="Sea Zone 43"/>
+	<xs:enumeration value="Sea Zone 44"/>
+	<xs:enumeration value="Sea Zone 45"/>
+	<xs:enumeration value="Sea Zone 46"/>
+	<xs:enumeration value="Sea Zone 47"/>
+	<xs:enumeration value="Sea Zone 48"/>
+	<xs:enumeration value="Sea Zone 49"/>
+	<xs:enumeration value="Sea Zone 50"/>
+	<xs:enumeration value="Sea Zone 51"/>
+	<xs:enumeration value="Sea Zone 52"/>
+	<xs:enumeration value="Sea Zone 53"/>
+	<xs:enumeration value="Sea Zone 54"/>
+	<xs:enumeration value="Sea Zone 55"/>
+	<xs:enumeration value="Sea Zone 56"/>
+	<xs:enumeration value="Sea Zone 57"/>
+	<xs:enumeration value="Sea Zone 58"/>
+	<xs:enumeration value="Sea Zone 59"/>
+	<xs:enumeration value="Sea Zone 60"/>
+	<xs:enumeration value="Sea Zone 61"/>
+	<xs:enumeration value="Sea Zone 62"/>
+	<xs:enumeration value="Sea Zone 63"/>
+	<xs:enumeration value="Sea Zone 64"/>
+	<xs:enumeration value="Eastern Canada"/>
+	<xs:enumeration value="Greenland"/>
+	<xs:enumeration value="Iceland"/>
+	<xs:enumeration value="United Kingdom"/>
+	<xs:enumeration value="Norway"/>
+	<xs:enumeration value="Karelia S.S.R."/>
+	<xs:enumeration value="Archangel"/>
+	<xs:enumeration value="Russia"/>
+	<xs:enumeration value="Evenki National Okrug"/>
+	<xs:enumeration value="Yakut S.S.R."/>
+	<xs:enumeration value="Soviet Far East"/>
+	<xs:enumeration value="Alaska"/>
+	<xs:enumeration value="Western Canada"/>
+	<xs:enumeration value="Central United States"/>
+	<xs:enumeration value="Eastern United States"/>
+	<xs:enumeration value="Western Europe"/>
+	<xs:enumeration value="Germany"/>
+	<xs:enumeration value="Eastern Europe"/>
+	<xs:enumeration value="Belorussia"/>
+	<xs:enumeration value="West Russia"/>
+	<xs:enumeration value="Novosibirsk"/>
+	<xs:enumeration value="Buryatia, S.S.R."/>
+	<xs:enumeration value="Panama"/>
+	<xs:enumeration value="West Indies"/>
+	<xs:enumeration value="Algeria"/>
+	<xs:enumeration value="Southern Europe"/>
+	<xs:enumeration value="Gibraltar"/>
+	<xs:enumeration value="Balkans"/>
+	<xs:enumeration value="Ukraine S.S.R."/>
+	<xs:enumeration value="Caucasus"/>
+	<xs:enumeration value="Kazakh S.S.R."/>
+	<xs:enumeration value="Sinkiang"/>
+	<xs:enumeration value="China"/>
+	<xs:enumeration value="Manchuria"/>
+	<xs:enumeration value="Japan"/>
+	<xs:enumeration value="Midway"/>
+	<xs:enumeration value="Western United States"/>
+	<xs:enumeration value="Brazil"/>
+	<xs:enumeration value="French West Africa"/>
+	<xs:enumeration value="French Equatorial Africa"/>
+	<xs:enumeration value="Libya"/>
+	<xs:enumeration value="Anglo Egypt Sudan"/>
+	<xs:enumeration value="Trans-Jordan"/>
+	<xs:enumeration value="Persia"/>
+	<xs:enumeration value="India"/>
+	<xs:enumeration value="French Indo-China"/>
+	<xs:enumeration value="Kwangtung"/>
+	<xs:enumeration value="Philippine Islands"/>
+	<xs:enumeration value="Okinawa"/>
+	<xs:enumeration value="Wake Island"/>
+	<xs:enumeration value="Hawaiian Islands"/>
+	<xs:enumeration value="Caroline Islands"/>
+	<xs:enumeration value="Mexico"/>
+	<xs:enumeration value="Belgian Congo"/>
+	<xs:enumeration value="Union of South Africa"/>
+	<xs:enumeration value="Rhodesia"/>
+	<xs:enumeration value="Italian East Africa"/>
+	<xs:enumeration value="French Madagascar"/>
+	<xs:enumeration value="East Indies"/>
+	<xs:enumeration value="Borneo"/>
+	<xs:enumeration value="Australia"/>
+	<xs:enumeration value="New Guinea"/>
+	<xs:enumeration value="Solomon Islands"/>
+	<xs:enumeration value="New Zealand"/>
+	    </xs:restriction>
+	  </xs:simpleType>
+	</xs:element>
