@@ -1,0 +1,93 @@
+FROM: http://www.axisandallies.org/resources-downloads/setup-chart-for-axis-allies-spring-1942/
+
+Setup Chart for Axis & Allies Spring 1942
+SOVIET UNION
+
+Starting Income: 24
+
+Russia: 3 infantry, 1 artillery, 2 tanks, 1 fighter, 1 AA gun, 1 Industrial Complex
+Karelia S.S.R.: 3 infantry, 1 fighter
+Archangel: 3 infantry, 1 tank
+Caucasus: 3 infantry, 1 tank, 1 AA gun, 1 Industrial Complex
+Kazakh S.S.R.: 2 infantry
+Novosibirsk: 2 infantry
+Evenki National Okrug: 2 infantry
+Yakut S.S.R.: 2 infantry
+Buryatia S.S.R.: 2 infantry
+Soviet Far East: 2 infantry
+Sea Zone 4: 1 submarine
+GERMANY
+
+Starting Income: 40
+
+Germany: 3 infantry, 2 tanks, 1 fighter, 1 bomber, 1 AA gun, 1 Industrial Complex
+Western Europe: 2 infantry, 2 tanks, 1 fighter, 1 AA gun
+Norway: 3 infantry, 1 fighter
+Southern Europe: 2 infantry, 1 artillery, 1 tank, 1 AA gun, 1 Industrial Complex
+Eastern Europe: 2 infantry, 1 tank, 1 fighter
+Balkans: 2 infantry, 1 tank, 1 fighter
+Belorussia: 3 infantry
+Ukraine S.S.R.: 3 infantry, 1 artillery, 1 tank, 1 fighter
+West Russia: 3 infantry, 1 artillery, 1 tank
+Algeria: 1 infantry, 1 artillery
+Libya: 1 infantry, 1 tank
+Zone 5: 1 destroyer, 2 submarines, 1 transport
+Zone 8: 1 submarine
+Zone 14: 1 battleship, 1 transport
+BRITAIN
+
+Starting Income: 30
+
+United Kingdom: 2 infantry, 1 artillery, 1 tank, 2 fighters, 1 bomber, 1 AA gun, 1 Industrial Complex
+Eastern Canada: 1 tank
+Western Canada: 1 infantry
+New Zealand: 1 infantry
+Australia: 3 infantry
+India: 3 infantry, 1 AA gun
+Persia: 1 infantry
+Trans-Jordan: 1 infantry
+Anglo-Egypt: 1 infantry, 1 tank, 1 fighter
+Union of South Africa: 1 infantry
+Zone 2: 1 battleship, 1 transport
+Zone 1: 1 transport
+Zone 40: 1 submarine, 1 transport
+Zone 35: 1 aircraft carrier (carrying 1 fighter), 1 cruiser, 1 transport
+Zone 11: 1 cruiser
+JAPAN
+
+Starting Income: 30
+
+Japan: 4 infantry, 1 artiller, 1 tank, 1 fighter, 1 bomber, 1 AA gun, 1 Industrial Complex
+Manchuria: 2 infantry, 1 fighter
+Kwangtung: 3 infantry
+French Indochina: 2 infantry, 1 fighter
+East Indies: 2 infantry
+Borneo: 1 infantry
+Philippine Islands: 2 infantry
+Okinawa: 1 infantry
+Wake Island: 1 infantry
+Caroline Islands: 1 infantry
+New Guinea: 1 infantry
+Solomon Islands: 1 infantry
+Zone 60: 1 battleship, 1 transport
+Zone 59: 1 transport
+Zone 37: 1 aircraft carrier (carrying 2 fighters), 1 battleship
+Zone 50: 1 aircraft carrier (carrying 1 fighter), 1 cruiser
+Zone 45: 1 submarine
+UNITED STATES
+
+Starting Income: 42
+
+Western U.S.: 2 infantry, 1 fighter, 1 AA gun, 1 Industrial Complex
+Central U.S.: 2 infantry
+Eastern U.S.: 2 infantry, 1 artillery, 1 tank, 1 fighter, 1 bomber, 1 AA gun, 1 Industrial Complex
+Alaska: 1 infantry
+Midway Islands: 1 infantry
+Hawaiian Islands: 2 infantry, 1 fighter
+China: 2 infantry, 1 fighter
+Sinkiang: 2 infantry
+Zone 55: 1 battleship, 1 transport
+Zone 10: 1 cruiser, 2 transports
+Zone 20: 1 destroyer
+Zone 52: 1 aircraft carrier (carrying 1 fighter), 1 submarine
+
