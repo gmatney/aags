@@ -37,6 +37,6 @@ public class CombatUtils {
     
     // Rolls a standard six-sided die and returns the result.
     public int rollDie() {
-        return randGenerator.nextInt(5) + 1;
+        return randGenerator.nextInt(6) + 1;
     }
 }
