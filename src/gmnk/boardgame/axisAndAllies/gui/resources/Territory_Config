@@ -80,7 +80,7 @@
 75|Soviet Far East|1|N|Russia|62,74,86|4121,330
 76|Alaska|2|N|America|63,64,77|4856,379
 77|Western Canada|1|N|Great Britain|64,65,76,101|5200,695
-78|Central United States|6|N|America|10,65,79,87,118|64,1152
+78|Central United States|6|N|America|10,65,79,87|64,1152
 79|Eastern United States|12|Y|America|10,65,78|223,1147
 80|Western Europe|6|Y|Germany|5,6,7,13,81,90|1122,1084
 81|Germany|10|Y|Germany|5,80,82,90,92|1516,991
@@ -89,7 +89,7 @@
 84|West Russia|2|N|Germany|70,71,72,83,93,94|2248,911
 85|Novosibirsk|2|N|Russia|72,73,74,95,96|2659,832
 86|Buryatia, S.S.R.|1|N|Russia|60,62,74,75,98|3713,623
-87|Panama|1|N|America|10,19,20,78|71,1520
+87|Panama|1|N|America|10,19,20,78,118|71,1520
 88|West Indies|1|N|America|19|352,1485
 89|Algeria|1|N|Germany|12,13,106|1140,1534
 90|Southern Europe|6|Y|Germany|13,14,80,81,92|1560,1248
@@ -119,7 +119,7 @@
 115|Wake Island|0|N|Japan|51|4325,1669
 116|Hawaiian Islands|1|N|America|52|4706,1615
 117|Caroline Islands|0|N|Japan|50|4093,1929
-118|Mexico|2|N|America|54,78,101|5215,1231
+118|Mexico|2|N|America|54,87,101|5215,1231
 119|Belgian Congo|1|N|Great Britain|23,105,107,121,122|1608,2230
 120|Union of South Africa|2|N|Great Britain|27,28,121|1631,2597
 121|Rhodesia|1|N|Great Britain|33,119,120,122|1798,2326

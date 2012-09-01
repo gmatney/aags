@@ -112,7 +112,6 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 		    	if(lineParts.length == 7 && !line.startsWith("#")) {
 			    	int id = Integer.parseInt(lineParts[0]);
 			    	String[] neighbors = lineParts[5].split(",");
-			    	log("Loading neighbors for " + id);
 			    	Territory t = territories.get(id);
 			    	for(String neighborStr : neighbors) {
 			    		Territory neighbor = territories.get(Integer.parseInt(neighborStr));
