@@ -1,0 +1,158 @@
+	{	"WorldPowerName":"",
+		"Faction"       :"",
+		"StartingIncome":,
+		"TerritoryControlled":
+		[
+			{"TerritoryName":"",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":},
+				{"type":"ARTILLERY"           ,"quantity":},
+				{"type":"TANK"                ,"quantity":},
+				{"type":"FIGHTER"             ,"quantity":},
+				{"type":"BOMBER"              ,"quantity":},
+				{"type":"AAGUN"               ,"quantity":},
+				{"type":"INDUSTRIAL_COMPLEX"  ,"quantity":}
+			]},
+			{"TerritoryName":"",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":},
+				{"type":"ARTILLERY"           ,"quantity":},
+				{"type":"TANK"                ,"quantity":},
+				{"type":"FIGHTER"             ,"quantity":},
+				{"type":"BOMBER"              ,"quantity":},
+				{"type":"AAGUN"               ,"quantity":},
+				{"type":"INDUSTRIAL_COMPLEX"  ,"quantity":}
+			]},
+			{"TerritoryName":"",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":},
+				{"type":"ARTILLERY"           ,"quantity":},
+				{"type":"TANK"                ,"quantity":},
+				{"type":"FIGHTER"             ,"quantity":},
+				{"type":"BOMBER"              ,"quantity":},
+				{"type":"AAGUN"               ,"quantity":},
+				{"type":"INDUSTRIAL_COMPLEX"  ,"quantity":}
+			]},						
+			{"TerritoryName":"",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":},
+				{"type":"ARTILLERY"           ,"quantity":},
+				{"type":"TANK"                ,"quantity":},
+				{"type":"FIGHTER"             ,"quantity":},
+				{"type":"BOMBER"              ,"quantity":},
+				{"type":"AAGUN"               ,"quantity":},
+				{"type":"INDUSTRIAL_COMPLEX"  ,"quantity":}
+			]},
+			{"TerritoryName":"",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":},
+				{"type":"ARTILLERY"           ,"quantity":},
+				{"type":"TANK"                ,"quantity":},
+				{"type":"FIGHTER"             ,"quantity":},
+				{"type":"BOMBER"              ,"quantity":},
+				{"type":"AAGUN"               ,"quantity":},
+				{"type":"INDUSTRIAL_COMPLEX"  ,"quantity":}
+			]},
+			{"TerritoryName":"",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":},
+				{"type":"ARTILLERY"           ,"quantity":},
+				{"type":"TANK"                ,"quantity":},
+				{"type":"FIGHTER"             ,"quantity":},
+				{"type":"BOMBER"              ,"quantity":},
+				{"type":"AAGUN"               ,"quantity":},
+				{"type":"INDUSTRIAL_COMPLEX"  ,"quantity":}
+			]},
+			{"TerritoryName":"",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":},
+				{"type":"ARTILLERY"           ,"quantity":},
+				{"type":"TANK"                ,"quantity":},
+				{"type":"FIGHTER"             ,"quantity":},
+				{"type":"BOMBER"              ,"quantity":},
+				{"type":"AAGUN"               ,"quantity":},
+				{"type":"INDUSTRIAL_COMPLEX"  ,"quantity":}
+			]},
+			{"TerritoryName":"",
+			"UnitsStationed":
+			[	{"type":"SUBMARINE"            ,"quantity":},
+				{"type":"TRANSPORT"            ,"quantity":},
+				{"type":"DESTROYER"            ,"quantity":},
+				{"type":"CRUISER"              ,"quantity":},
+				{"type":"AIRCRAFT_CARRIER"     ,"quantity":},
+				{"type":"BATTLESHIP"           ,"quantity":},
+
+			]},	
+			{"TerritoryName":"",
+			"UnitsStationed":
+			[	{"type":"SUBMARINE"            ,"quantity":},
+				{"type":"TRANSPORT"            ,"quantity":},
+				{"type":"DESTROYER"            ,"quantity":},
+				{"type":"CRUISER"              ,"quantity":},
+				{"type":"AIRCRAFT_CARRIER"     ,"quantity":},
+				{"type":"BATTLESHIP"           ,"quantity":},
+
+			]},			
+			{"TerritoryName":"",
+			"UnitsStationed":
+			[	{"type":"SUBMARINE"            ,"quantity":},
+				{"type":"TRANSPORT"            ,"quantity":},
+				{"type":"DESTROYER"            ,"quantity":},
+				{"type":"CRUISER"              ,"quantity":},
+				{"type":"AIRCRAFT_CARRIER"     ,"quantity":},
+				{"type":"BATTLESHIP"           ,"quantity":},
+
+			]},	
+			{"TerritoryName":"",
+			"UnitsStationed":
+			[	{"type":"SUBMARINE"            ,"quantity":},
+				{"type":"TRANSPORT"            ,"quantity":},
+				{"type":"DESTROYER"            ,"quantity":},
+				{"type":"CRUISER"              ,"quantity":},
+				{"type":"AIRCRAFT_CARRIER"     ,"quantity":},
+				{"type":"BATTLESHIP"           ,"quantity":},
+
+			]},	
+			{"TerritoryName":"",
+			"UnitsStationed":
+			[	{"type":"SUBMARINE"            ,"quantity":},
+				{"type":"TRANSPORT"            ,"quantity":},
+				{"type":"DESTROYER"            ,"quantity":},
+				{"type":"CRUISER"              ,"quantity":},
+				{"type":"AIRCRAFT_CARRIER"     ,"quantity":},
+				{"type":"BATTLESHIP"           ,"quantity":},
+
+			]},	
+			{"TerritoryName":"",
+			"UnitsStationed":
+			[	{"type":"SUBMARINE"            ,"quantity":},
+				{"type":"TRANSPORT"            ,"quantity":},
+				{"type":"DESTROYER"            ,"quantity":},
+				{"type":"CRUISER"              ,"quantity":},
+				{"type":"AIRCRAFT_CARRIER"     ,"quantity":},
+				{"type":"BATTLESHIP"           ,"quantity":},
+
+			]},	
+			{"TerritoryName":"",
+			"UnitsStationed":
+			[	{"type":"SUBMARINE"            ,"quantity":},
+				{"type":"TRANSPORT"            ,"quantity":},
+				{"type":"DESTROYER"            ,"quantity":},
+				{"type":"CRUISER"              ,"quantity":},
+				{"type":"AIRCRAFT_CARRIER"     ,"quantity":},
+				{"type":"BATTLESHIP"           ,"quantity":},
+
+			]},	
+			{"TerritoryName":"",
+			"UnitsStationed":
+			[	{"type":"SUBMARINE"            ,"quantity":},
+				{"type":"TRANSPORT"            ,"quantity":},
+				{"type":"DESTROYER"            ,"quantity":},
+				{"type":"CRUISER"              ,"quantity":},
+				{"type":"AIRCRAFT_CARRIER"     ,"quantity":},
+				{"type":"BATTLESHIP"           ,"quantity":},
+
+			]},		
+		]
+
+	},		

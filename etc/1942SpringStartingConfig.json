@@ -1,0 +1,410 @@
+{"WorldPower":[
+	{	"WorldPowerName":"SOVIET UNION",
+		"Faction"       :"ALLIES",
+		"StartingIncome":24,
+		"TerritoryControlled":
+		[
+			{"TerritoryName":"Russia",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":3},
+				{"type":"ARTILLERY"           ,"quantity":1},
+				{"type":"TANK"                ,"quantity":2},
+				{"type":"FIGHTER"             ,"quantity":1},
+				{"type":"AAGUN"               ,"quantity":1},
+				{"type":"INDUSTRIAL_COMPLEX"  ,"quantity":1}
+			]},		
+			
+			{"TerritoryName":"Karelia S.S.R.",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":3},
+				{"type":"FIGHTER"             ,"quantity":1}
+			]},
+			
+			{"TerritoryName":"Archangel",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":3},
+				{"type":"TANK"                ,"quantity":1}
+			]},
+			
+			{"TerritoryName":"Caucasus",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":3},
+				{"type":"TANK"                ,"quantity":1},
+				{"type":"AAGUN"               ,"quantity":1},
+				{"type":"INDUSTRIAL_COMPLEX"  ,"quantity":1}
+			]},
+			
+			{"TerritoryName":"Kazakh S.S.R.",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":2}
+			]},		
+						
+			{"TerritoryName":"Novosibirsk",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":2}
+			]},
+			
+			{"TerritoryName":"Evenki National Okrug",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":2}
+			]},
+			
+			{"TerritoryName":"Yakut S.S.R.",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":2}
+			]},
+			
+			{"TerritoryName":"Buryatia S.S.R.",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":2}
+			]},
+			
+			{"TerritoryName":"Soviet Far East",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":2}
+			]},
+			
+			{"TerritoryName":"Sea Zone 4",
+			"UnitsStationed":
+			[	{"type":"SUBMARINE"           ,"quantity":1}
+			]}	
+		]
+	},
+	{	"WorldPowerName":"GERMANY",
+		"Faction"       :"AXIS",
+		"StartingIncome":40,
+		"TerritoryControlled":
+		[
+			{"TerritoryName":"GERMANY",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":3},
+				{"type":"TANK"                ,"quantity":2},
+				{"type":"FIGHTER"             ,"quantity":1},
+				{"type":"BOMBER"              ,"quantity":1},
+				{"type":"AAGUN"               ,"quantity":1},
+				{"type":"INDUSTRIAL_COMPLEX"  ,"quantity":1}
+			]},
+			{"TerritoryName":"Western Europe",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":2},
+				{"type":"TANK"                ,"quantity":2},
+				{"type":"FIGHTER"             ,"quantity":1},
+				{"type":"AAGUN"               ,"quantity":1}
+			]},
+			{"TerritoryName":"Norway",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":3},
+				{"type":"FIGHTER"             ,"quantity":1}
+			]},									
+			{"TerritoryName":"Southern Europe",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":2},
+				{"type":"ARTILLERY"           ,"quantity":1},
+				{"type":"TANK"                ,"quantity":1},
+				{"type":"AAGUN"               ,"quantity":1},
+				{"type":"INDUSTRIAL_COMPLEX"  ,"quantity":1}
+			]},
+			{"TerritoryName":"Eastern Europe",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":2},
+				{"type":"TANK"                ,"quantity":1},
+				{"type":"FIGHTER"             ,"quantity":1}
+			]},
+			{"TerritoryName":"Balkans",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":2},
+				{"type":"TANK"                ,"quantity":1},
+				{"type":"FIGHTER"             ,"quantity":1}
+			]},
+			{"TerritoryName":"Belorussia",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":3}
+			]},
+			{"TerritoryName":"Ukraine S.S.R.",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":3},
+				{"type":"ARTILLERY"           ,"quantity":1},
+				{"type":"TANK"                ,"quantity":1},
+				{"type":"FIGHTER"             ,"quantity":1}
+			]},						
+			{"TerritoryName":"West Russia",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":3},
+				{"type":"ARTILLERY"           ,"quantity":1},
+				{"type":"TANK"                ,"quantity":1}
+			]},
+			{"TerritoryName":"Algeria",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":1},
+				{"type":"ARTILLERY"           ,"quantity":1}
+			]},
+			{"TerritoryName":"Libya",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":1},
+				{"type":"ARTILLERY"           ,"quantity":1}
+			]},
+			{"TerritoryName":"Sea Zone 5",
+			"UnitsStationed":
+			[	{"type":"SUBMARINE"            ,"quantity":2},
+				{"type":"TRANSPORT"            ,"quantity":1},
+				{"type":"DESTROYER"            ,"quantity":1}
+
+			]},	
+			{"TerritoryName":"Sea Zone 8",
+			"UnitsStationed":
+			[	{"type":"SUBMARINE"            ,"quantity":1}
+			]},			
+			{"TerritoryName":"Sea Zone 14",
+			"UnitsStationed":
+			[	{"type":"TRANSPORT"            ,"quantity":1},
+				{"type":"BATTLESHIP"           ,"quantity":1}
+
+			]}
+		]
+	},
+	{	"WorldPowerName":"BRITAIN",
+		"Faction"       :"ALLIES",
+		"StartingIncome":30,
+		"TerritoryControlled":
+		[
+			{"TerritoryName":"United Kingdom",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":2},
+				{"type":"ARTILLERY"           ,"quantity":1},
+				{"type":"TANK"                ,"quantity":1},
+				{"type":"FIGHTER"             ,"quantity":2},
+				{"type":"BOMBER"              ,"quantity":1},
+				{"type":"AAGUN"               ,"quantity":1},
+				{"type":"INDUSTRIAL_COMPLEX"  ,"quantity":1}
+			]},
+			{"TerritoryName":"Eastern Canada",
+			"UnitsStationed":
+			[	{"type":"TANK"                ,"quantity":1}
+			]},
+			{"TerritoryName":"Western Canada",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":1}
+			]},						
+			{"TerritoryName":"New Zealand",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":1}
+			]},		
+			{"TerritoryName":"Australia",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":3}
+			]},
+			{"TerritoryName":"India",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":3},
+				{"type":"AAGUN"               ,"quantity":1}
+			]},
+			{"TerritoryName":"Persia",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":1}
+			]},
+			{"TerritoryName":"Trans-Jordan",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":1}
+			]},
+			{"TerritoryName":"Anglo-Egypt",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":1},
+				{"type":"TANK"                ,"quantity":1},
+				{"type":"FIGHTER"             ,"quantity":1}
+			]},
+			{"TerritoryName":"Union of South Africa",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":1}
+			]},			
+			{"TerritoryName":"Sea Zone 2:",
+			"UnitsStationed":
+			[	{"type":"TRANSPORT"           ,"quantity":1},
+				{"type":"BATTLESHIP"          ,"quantity":1}
+
+			]},	
+			{"TerritoryName":"Sea Zone 1",
+			"UnitsStationed":
+			[	{"type":"TRANSPORT"           ,"quantity":1}
+			]},			
+			{"TerritoryName":"Sea Zone 40",
+			"UnitsStationed":
+			[	{"type":"SUBMARINE"           ,"quantity":1},
+				{"type":"TRANSPORT"           ,"quantity":1}
+			]},	
+			{"TerritoryName":"Sea Zone 35",
+			"UnitsStationed":
+			[	{"type":"TRANSPORT"           ,"quantity":1},
+				{"type":"CRUISER"             ,"quantity":1},
+				{"type":"AIRCRAFT_CARRIER"    ,"quantity":1},
+				{"type":"FIGHTER"             ,"quantity":1}
+			]},	
+			{"TerritoryName":"Sea Zone 11",
+			"UnitsStationed":
+			[	{"type":"CRUISER"              ,"quantity":1}
+			]}	
+		]
+
+	},		
+	{	"WorldPowerName":"JAPAN",
+		"Faction"       :"AXIS",
+		"StartingIncome":30,
+		"TerritoryControlled":
+		[
+			{"TerritoryName":"Japan",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":4},
+				{"type":"ARTILLERY"           ,"quantity":1},
+				{"type":"TANK"                ,"quantity":1},
+				{"type":"FIGHTER"             ,"quantity":1},
+				{"type":"BOMBER"              ,"quantity":1},
+				{"type":"AAGUN"               ,"quantity":1},
+				{"type":"INDUSTRIAL_COMPLEX"  ,"quantity":1}
+			]},
+			{"TerritoryName":"Manchuria",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":2},
+				{"type":"FIGHTER"             ,"quantity":1}
+			]},
+			{"TerritoryName":"Kwangtung",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":3}
+			]},	
+			{"TerritoryName":"French Indochina",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":2},
+				{"type":"FIGHTER"             ,"quantity":1}
+			]},
+			{"TerritoryName":"East Indies",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":2}
+			]},
+			{"TerritoryName":"Borneo",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":1}
+			]},
+			{"TerritoryName":"Philippine Islands",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":2}
+			]},
+			{"TerritoryName":"Okinawa",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":1}
+			]},
+			{"TerritoryName":"Wake Island",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":1}
+			]},
+			{"TerritoryName":"Caroline Islands",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":1}
+			]},
+			{"TerritoryName":"New Guinea",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":1}
+			]},
+			{"TerritoryName":"Solomon Islands",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":1}
+			]},
+			{"TerritoryName":"Sea Zone 60",
+			"UnitsStationed":
+			[	{"type":"TRANSPORT"            ,"quantity":1},
+				{"type":"BATTLESHIP"           ,"quantity":1}
+
+			]},	
+			{"TerritoryName":"Sea Zone 59",
+			"UnitsStationed":
+			[	{"type":"TRANSPORT"            ,"quantity":1}
+			]},			
+			{"TerritoryName":"Sea Zone 37",
+			"UnitsStationed":
+			[	{"type":"AIRCRAFT_CARRIER"     ,"quantity":1},
+				{"type":"FIGHTER"              ,"quantity":2},
+				{"type":"BATTLESHIP"           ,"quantity":1}
+
+			]},	
+			{"TerritoryName":"Sea Zone 50",
+			"UnitsStationed":
+			[	{"type":"CRUISER"              ,"quantity":1},
+				{"type":"AIRCRAFT_CARRIER"     ,"quantity":1},
+				{"type":"FIGHTER"              ,"quantity":1}
+			]},	
+			{"TerritoryName":"Sea Zone 45",
+			"UnitsStationed":
+			[	{"type":"SUBMARINE"            ,"quantity":1}
+			]}
+		]
+	},	
+	{	"WorldPowerName":"UNITED STATES",
+		"Faction"       :"ALLIES",
+		"StartingIncome":42,
+		"TerritoryControlled":
+		[
+			{"TerritoryName":"Western U.S.",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":2},
+				{"type":"FIGHTER"             ,"quantity":1},
+				{"type":"AAGUN"               ,"quantity":1},
+				{"type":"INDUSTRIAL_COMPLEX"  ,"quantity":1}
+			]},
+			{"TerritoryName":"Central U.S.",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":2}
+			]},
+			{"TerritoryName":"Eastern U.S.",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":2},
+				{"type":"ARTILLERY"           ,"quantity":1},
+				{"type":"TANK"                ,"quantity":1},
+				{"type":"FIGHTER"             ,"quantity":1},
+				{"type":"BOMBER"              ,"quantity":1},
+				{"type":"AAGUN"               ,"quantity":1},
+				{"type":"INDUSTRIAL_COMPLEX"  ,"quantity":1}
+			]},						
+			{"TerritoryName":"Alaska",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":1}
+			]},
+			{"TerritoryName":"Midway Islands",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":1}
+			]},
+			{"TerritoryName":"Hawaiian Islands",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":2},
+				{"type":"FIGHTER"             ,"quantity":1}
+			]},
+			{"TerritoryName":"China",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":2},
+				{"type":"FIGHTER"             ,"quantity":1}
+			]},
+			{"TerritoryName":"Sinkiang",
+			"UnitsStationed":
+			[	{"type":"INFANTRY"            ,"quantity":2}
+			]},			
+			{"TerritoryName":"Sea Zone 55",
+			"UnitsStationed":
+			[	{"type":"TRANSPORT"            ,"quantity":1},
+				{"type":"BATTLESHIP"           ,"quantity":1}
+			]},	
+			{"TerritoryName":"Sea Zone 10",
+			"UnitsStationed":
+			[	{"type":"TRANSPORT"            ,"quantity":2},
+				{"type":"CRUISER"              ,"quantity":1}
+			]},					
+			{"TerritoryName":"Sea Zone 20",
+			"UnitsStationed":
+			[	{"type":"DESTROYER"            ,"quantity":1}
+			]},	
+			{"TerritoryName":"Sea Zone 52",
+			"UnitsStationed":
+			[	{"type":"SUBMARINE"            ,"quantity":1},
+				{"type":"AIRCRAFT_CARRIER"     ,"quantity":1},
+				{"type":"FIGHTER"              ,"quantity":1}
+
+			]}
+		]
+
+	}		
+]}
