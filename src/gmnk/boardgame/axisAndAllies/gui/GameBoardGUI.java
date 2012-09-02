@@ -32,15 +32,15 @@ import javax.swing.Timer;
 
 public class GameBoardGUI extends JPanel implements ActionListener {
 
-    final int WORLD_WIDTH = 1000;
-    final int WORLD_HEIGHT = 700;
+    public static final int WORLD_WIDTH = 1000;
+    public static final int WORLD_HEIGHT = 700;
 
-    Graphics2D g2d;
-    Timer time;
-    Camera cam;
+    private Graphics2D g2d;
+    private Timer time;
+    private Camera cam;
     
-    BufferedImage mapImage;
-    BufferedImage territoryOverlay;
+    private BufferedImage mapImage;
+    private BufferedImage territoryOverlay;
     
 
 	Point mousePos;
@@ -60,7 +60,6 @@ public class GameBoardGUI extends JPanel implements ActionListener {
         setFocusable(true);
 		initialize();
 	}
-	
 	public void initialize() {
 		try {
 		    File dir = new File(CONSTANTS.RESOURCE_PATH);
@@ -70,9 +69,7 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-
-        cam = new Camera();
+        cam = new Camera(getMapWidth()-WORLD_WIDTH,getMapHeight()-WORLD_HEIGHT);
         cam.setX(WORLD_WIDTH / 2);
         cam.setY(WORLD_HEIGHT / 2);
         mousePos = new Point();
@@ -286,6 +283,18 @@ public class GameBoardGUI extends JPanel implements ActionListener {
         	
         	
         }
+    }
+    public int getMapWidth(){
+    	if(mapImage==null){
+    		return 0;
+    	}
+    	return mapImage.getWidth();
+    }
+    public int getMapHeight(){
+    	if(mapImage==null){
+    		return 0;
+    	}
+    	return mapImage.getHeight();    	
     }
     
     public void log(String s)

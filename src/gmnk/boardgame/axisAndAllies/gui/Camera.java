@@ -6,12 +6,14 @@ import java.awt.event.KeyEvent;
 public class Camera {
     private boolean up, down, left, right;
     private int x, y;
-    private float xVel = 30.0f;
-    private float yVel = 30.0f;
+    private int xVel = 30;
+    private int yVel = 30;
+    private int maxWidth;
+    private int maxHeight;
     
-    public Camera()
-    {
-        
+    public Camera(int maxWidth, int maxHeight){
+        this.maxHeight = maxHeight;
+        this.maxWidth  = maxWidth;
     }
 
     public int getX() {
@@ -32,14 +34,35 @@ public class Camera {
     
     public void update()
     {
-        if(down)
-            y += yVel;
-        if(up)
-            y -= yVel;
-        if(left)
-            x -= xVel;
-        if(right)
-            x += xVel;
+        if(up){
+        	int newY = y - yVel; 
+        	if(newY<0){
+        		newY=0;
+        	}
+            y = newY;
+        }
+        if(down){
+        	int newY = y + yVel; 
+        	if(newY>maxHeight){
+        		newY=maxHeight;
+        	}
+            y = newY;
+        }
+        if(left){
+        	int newX= x - xVel; 
+        	if(newX<0){
+        		newX=0;
+        	}
+            x = newX;
+        }
+        if(right){
+        	int newX= x + xVel; 
+        	if(newX>maxWidth){
+        		newX=maxWidth;
+        	}
+            x = newX;
+        }
+            
     }
     
     public void keyPressed(KeyEvent e) {    
