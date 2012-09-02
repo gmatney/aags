@@ -10,6 +10,7 @@ public class Camera {
     private int yVel = 30;
     private int maxWidth;
     private int maxHeight;
+    public double zoomFactor;
     
     public Camera(int maxWidth, int maxHeight){
         this.maxHeight = maxHeight;

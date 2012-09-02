@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
@@ -41,7 +42,6 @@ public class GameBoardGUI extends JPanel implements ActionListener {
     
     private BufferedImage mapImage;
     private BufferedImage territoryOverlay;
-    
 
 	Point mousePos;
 	Territory mouseStartDrag;
@@ -69,10 +69,11 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-        cam = new Camera(getMapWidth()-WORLD_WIDTH,getMapHeight()-WORLD_HEIGHT);
+        cam = new Camera(getMapWidth()-this.getWidth(),getMapHeight()-this.getHeight());
         cam.setX(WORLD_WIDTH / 2);
         cam.setY(WORLD_HEIGHT / 2);
         mousePos = new Point();
+        DrawUtils.cam = cam;
         
         territories = new HashMap<Integer, Territory>();
         loadTerritoryConfig();
@@ -166,15 +167,16 @@ public class GameBoardGUI extends JPanel implements ActionListener {
         g2d.setRenderingHint( RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setColor(Color.black);
+        DrawUtils.g2d = g2d;
         
         // Background map image
-        g2d.drawImage(mapImage, 0 - cam.getX(), 0 - cam.getY(), null);
+        DrawUtils.drawImage(mapImage, new Point(0, 0));
         
         // Territory centers
         g2d.setColor(Color.red);
         for(Territory t : territories.values()) {
         	if(t.getCenter() != null)
-        		g2d.fillRect(t.getCenter().x - cam.getX(), t.getCenter().y - cam.getY(), 10, 10);
+        		DrawUtils.fillRect(t.getCenter().x, t.getCenter().y, 10, 10);
         }
         
         // Lines connecting territories that are neighbors
@@ -182,9 +184,24 @@ public class GameBoardGUI extends JPanel implements ActionListener {
         if(t != null) {
 	    	for(Territory neighbor : t.getNeighbors()) {
 	    		if(neighbor != null && neighbor.getCenter() != null) {
-	        		g2d.drawLine(t.getCenter().x - cam.getX(), t.getCenter().y - cam.getY(), neighbor.getCenter().x - cam.getX(), neighbor.getCenter().y - cam.getY());
+	        		DrawUtils.drawLine(t.getCenter().x, t.getCenter().y, neighbor.getCenter().x, neighbor.getCenter().y);
 	    		}
 	    	}
+        }
+        
+        // Unit count in territories
+        for(Territory territory : territories.values()) {
+        	g2d.setColor(new Color(255, 255, 255, 128));
+        	LinkedHashMap<String, Integer> units = territory.getUnitTable(); 
+        	int numRows = units.keySet().size();
+        	DrawUtils.fillRect(territory.getCenter().x, territory.getCenter().y, 50, 15 * numRows + 5);
+        	g2d.setColor(Color.black);
+        	int rowCounter = 0;
+        	for(String unit : units.keySet()) {
+        		rowCounter++;
+        		DrawUtils.drawString(unit, territory.getCenter().x + 5, territory.getCenter().y + 15 * rowCounter);
+        		DrawUtils.drawString("" + units.get(unit), territory.getCenter().x + 30, territory.getCenter().y + 15 * rowCounter);
+        	}
         }
         
         // HUD overlay
@@ -280,8 +297,9 @@ public class GameBoardGUI extends JPanel implements ActionListener {
         	//TODO not sure if the scaling would take too much processing
         	//TODO or if we would need to create image maps for a set of scaling levels
         	//  EXAMPLE 10 different levels one can zoom in, each with their pair of images so no scaling was needed
-        	
-        	
+        	cam.zoomFactor -= e.getPreciseWheelRotation();
+        	//cam.setX((int)(cam.getX() * (1 + cam.zoomFactor / 10)));
+        	//cam.setY((int)(cam.getY() * (1 + cam.zoomFactor / 10)));
         }
     }
     public int getMapWidth(){

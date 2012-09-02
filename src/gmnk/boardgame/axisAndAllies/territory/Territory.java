@@ -3,7 +3,9 @@ package gmnk.boardgame.axisAndAllies.territory;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 
 public class Territory {
 	private int id;
@@ -84,6 +86,18 @@ public class Territory {
 
     public void setCenter(Point center) {
         this.center = center; 
+    }
+    
+    public LinkedHashMap<String, Integer> getUnitTable() {
+    	LinkedHashMap<String, Integer> units = new LinkedHashMap<String, Integer>();
+    	units.put("I", 3);
+    	units.put("A", 2);
+    	units.put("T", 1);
+    	units.put("F", 1);
+    	units.put("B", 4);
+    	units.put("AA", 1);
+    	units.put("IC", 1);
+    	return units;
     }
     
     public String toConfigString() {

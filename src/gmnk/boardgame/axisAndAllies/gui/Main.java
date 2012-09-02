@@ -8,6 +8,6 @@ public class Main extends JApplet {
     public void init() {
         game = new GameBoardGUI();
         add(game);
-        setSize(800,600);
+        setSize(GameBoardGUI.WORLD_WIDTH,GameBoardGUI.WORLD_HEIGHT);
      }
 }
