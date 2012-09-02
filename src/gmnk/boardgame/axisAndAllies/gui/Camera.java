@@ -6,8 +6,8 @@ import java.awt.event.KeyEvent;
 public class Camera {
     private boolean up, down, left, right;
     private int x, y;
-    private float xVel = 5.0f;
-    private float yVel = 5.0f;
+    private float xVel = 30.0f;
+    private float yVel = 30.0f;
     
     public Camera()
     {

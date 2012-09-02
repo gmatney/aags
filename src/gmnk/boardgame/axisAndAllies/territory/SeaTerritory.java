@@ -1,4 +1,4 @@
-package gmnk.boardgame.axisAndAllies.land;
+package gmnk.boardgame.axisAndAllies.territory;
 
 public class SeaTerritory extends Territory{
 

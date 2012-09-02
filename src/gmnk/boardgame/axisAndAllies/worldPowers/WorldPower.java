@@ -11,6 +11,13 @@ public class WorldPower {
 	protected int startingIpcIncome;
 	protected int currentIpcIncome;
 	protected int ipcSavings;
+	public WorldPower(String name, Faction faction,int startingIpcIncome){
+		this.name = name;
+		this.faction = faction;
+		this.startingIpcIncome = startingIpcIncome;
+		this.currentIpcIncome  = this.startingIpcIncome;
+		this.ipcSavings        = this.startingIpcIncome;
+	}
 	public Faction getFaction() {
 		return faction;
 	}

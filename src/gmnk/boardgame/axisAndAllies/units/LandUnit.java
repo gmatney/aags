@@ -1,7 +1,7 @@
 package gmnk.boardgame.axisAndAllies.units;
 
-import gmnk.boardgame.axisAndAllies.land.SeaTerritory;
-import gmnk.boardgame.axisAndAllies.land.Territory;
+import gmnk.boardgame.axisAndAllies.territory.SeaTerritory;
+import gmnk.boardgame.axisAndAllies.territory.Territory;
 import gmnk.boardgame.axisAndAllies.units.sea.Transport;
 
 public class LandUnit extends UnitProfile{

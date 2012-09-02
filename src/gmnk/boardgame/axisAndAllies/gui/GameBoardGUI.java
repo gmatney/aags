@@ -1,6 +1,7 @@
 package gmnk.boardgame.axisAndAllies.gui;
 
-import gmnk.boardgame.axisAndAllies.land.Territory;
+import gmnk.boardgame.axisAndAllies.CONSTANTS;
+import gmnk.boardgame.axisAndAllies.territory.Territory;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -33,7 +34,6 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 
     final int WORLD_WIDTH = 1000;
     final int WORLD_HEIGHT = 700;
-    final String RESOURCE_PATH = "./gmnk/boardgame/axisAndAllies/gui/resources/";
 
     Graphics2D g2d;
     Timer time;
@@ -41,6 +41,7 @@ public class GameBoardGUI extends JPanel implements ActionListener {
     
     BufferedImage mapImage;
     BufferedImage territoryOverlay;
+    
 
 	Point mousePos;
 	Territory mouseStartDrag;
@@ -62,13 +63,14 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 	
 	public void initialize() {
 		try {
-		    File dir = new File(RESOURCE_PATH);
+		    File dir = new File(CONSTANTS.RESOURCE_PATH);
 		    log(dir.getCanonicalPath());
-			mapImage = ImageIO.read(new File(RESOURCE_PATH + "AAmap_final.jpg"));
-			territoryOverlay = ImageIO.read(new File(RESOURCE_PATH + "AAmap_overlay_final.png"));
+			mapImage = ImageIO.read(new File(CONSTANTS.RESOURCE_PATH + "AAmap_final.jpg"));
+			territoryOverlay = ImageIO.read(new File(CONSTANTS.RESOURCE_PATH + "AAmap_overlay_final.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
 
         cam = new Camera();
         cam.setX(WORLD_WIDTH / 2);
@@ -83,7 +85,7 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 	}
 	
 	public void loadTerritoryConfig() {
-	    String configPath = RESOURCE_PATH + "Territory_Config";
+	    String configPath = CONSTANTS.RESOURCE_PATH + CONSTANTS.TERRITORY_CONFIG;
 		try {
 		    BufferedReader in = new BufferedReader(new FileReader(configPath));
 		    String line;
@@ -150,6 +152,13 @@ public class GameBoardGUI extends JPanel implements ActionListener {
             activeTerritory = red;
         }
     }
+    //TODO add a minimap (could go somewhere like bottom right and be collapsable
+    public Image createMiniMapImage(BufferedImage image, int resizeFactor){
+    	return image.getScaledInstance(mapImage.getWidth() / resizeFactor
+    			, mapImage.getHeight() / resizeFactor
+    			, java.awt.Image.SCALE_SMOOTH);
+    	
+    }
     
     public void paint(Graphics g)
     {
@@ -189,7 +198,7 @@ public class GameBoardGUI extends JPanel implements ActionListener {
         Territory mouseTerritory = territories.get(activeTerritory);
         if(mouseTerritory != null) {
             g2d.drawString("Mouse position: " + mousePos.x + ", " + mousePos.y, 5, 35);
-            g2d.drawString("Active territory: " + activeTerritory + " (" + territories.get(activeTerritory).name + ")", 5, 50);
+            g2d.drawString("Active territory: " + activeTerritory + " (" + territories.get(activeTerritory).getName() + ")", 5, 50);
         }
         g2d.drawString("You are in " + gameMode + " mode", 5, 80);
         //g2d.drawString("  Press E to enter Edit mode", 5, 95);
@@ -270,6 +279,12 @@ public class GameBoardGUI extends JPanel implements ActionListener {
             mousePos.y = e.getY();
         }
         public void mouseWheelMoved(MouseWheelEvent e) {
+        	//TODO allow zooming in and out on the map.
+        	//TODO not sure if the scaling would take too much processing
+        	//TODO or if we would need to create image maps for a set of scaling levels
+        	//  EXAMPLE 10 different levels one can zoom in, each with their pair of images so no scaling was needed
+        	
+        	
         }
     }
     

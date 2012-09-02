@@ -1,6 +1,6 @@
 package gmnk.boardgame.axisAndAllies.units;
 
-import gmnk.boardgame.axisAndAllies.land.Territory;
+import gmnk.boardgame.axisAndAllies.territory.Territory;
 
 public class UnitProfile {
 	protected int cost;
