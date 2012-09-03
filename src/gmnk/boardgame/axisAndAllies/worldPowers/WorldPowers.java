@@ -13,4 +13,7 @@ public class WorldPowers {
 	public int getPowersSize(){
 		return powers.size();
 	}
+	public WorldPower getPower(WorldPowerName powerName) {
+	    return powers.get(powerName);
+	}
 }

@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 
 public class World {
 	private static Logger log = Logger.getLogger(World.class);
-	Hashtable<String,Territory> territories;
+	private Hashtable<String,Territory> territories;
 	public World(){
 		territories = new Hashtable<String,Territory>();
 		loadTerritoryConfig(); 
@@ -46,6 +46,9 @@ public class World {
 			}
 		}
 		return false;
+	}
+	public Hashtable<String, Territory> getTerritories() {
+	    return territories;
 	}
 	public Territory getTerritoryByName(String name){
 		if(name == null){return null;}

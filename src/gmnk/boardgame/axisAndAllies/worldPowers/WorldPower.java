@@ -1,5 +1,6 @@
 package gmnk.boardgame.axisAndAllies.worldPowers;
 
+import java.awt.Color;
 import java.util.ArrayList;
 
 /** 
@@ -15,8 +16,9 @@ public class WorldPower {
 	private int ipcSavings;
 	private ArrayList<String> controlledTerritories;
 	private String capitalTerritory;
+	private Color guiColor;
 	
-	public WorldPower(WorldPowerName name, Faction faction,int startingIpcIncome, String capitalTerritory){
+	public WorldPower(WorldPowerName name, Faction faction,int startingIpcIncome, String capitalTerritory, Color guiColor){
 		this.name = name;
 		this.faction = faction;
 		this.startingIpcIncome = startingIpcIncome;
@@ -24,6 +26,7 @@ public class WorldPower {
 		this.currentIpcIncome  = this.startingIpcIncome;
 		this.ipcSavings        = this.startingIpcIncome;
 		controlledTerritories  = new ArrayList<String>();
+		this.guiColor          = guiColor;
 	}
 	public Faction getFaction() {
 		return faction;
@@ -56,5 +59,10 @@ public class WorldPower {
 	public String getCapitalTerritory(){
 		return capitalTerritory;
 	}
-
+	public Color getColor() {
+	    return guiColor;
+	}
+	public void setColor(Color guiColor) {
+        this.guiColor = guiColor;
+    }
 }

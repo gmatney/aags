@@ -4,6 +4,7 @@ import gmnk.boardgame.axisAndAllies.gameController.EnumInterpreter;
 import gmnk.boardgame.axisAndAllies.territory.World;
 import gmnk.boardgame.axisAndAllies.units.StationedGroup;
 
+import java.awt.Color;
 import java.lang.reflect.Type;
 import java.util.Iterator;
 
@@ -39,11 +40,13 @@ public class WorldPowerJsonDeserializer implements JsonDeserializer<WorldPowers>
 					worldPower.get("WorldPowerName").getAsString());
 			Faction faction = EnumInterpreter.getFaction(
 					worldPower.get("Faction").getAsString()); 
-			int startingIncome = worldPower.get("StartingIncome").getAsInt(); 
+			int startingIncome = worldPower.get("StartingIncome").getAsInt();
+	        Color guiColor = new Color(Integer.decode(worldPower.get("GuiColor").getAsString()));
+	        guiColor = new Color(guiColor.getRed(), guiColor.getGreen(), guiColor.getBlue(), 180);
 			String capitalTerritory = World.getStandardizedTerritoryKey(
 					worldPower.get("capitalTerritory").getAsString());
 			log.info("Loading in WorldPower named '"+worldPowerName+"'");
-			WorldPower wp = new WorldPower( worldPowerName,faction,startingIncome,capitalTerritory);
+			WorldPower wp = new WorldPower( worldPowerName,faction,startingIncome,capitalTerritory,guiColor);
 			//CANNOT POPULATE WORLD ELEMENT INDIRECTLY NOW
 			//WOULD NEED TO DO IF WANT TO USE
 			wps.addWorldPower(wp);
@@ -66,10 +69,12 @@ public class WorldPowerJsonDeserializer implements JsonDeserializer<WorldPowers>
 			Faction faction = EnumInterpreter.getFaction(
 					worldPower.get("Faction").getAsString()); 
 			int startingIncome = worldPower.get("StartingIncome").getAsInt(); 
+			Color guiColor = new Color(Integer.decode(worldPower.get("GuiColor").getAsString()));
+			guiColor = new Color(guiColor.getRed(), guiColor.getGreen(), guiColor.getBlue(), 180);
 			String capitalTerritory = World.getStandardizedTerritoryKey(
 					worldPower.get("CapitalTerritory").getAsString());
 			log.info("Loading in WorldPower named '"+worldPowerName+"'");
-			WorldPower wp = new WorldPower( worldPowerName,faction,startingIncome,capitalTerritory);
+			WorldPower wp = new WorldPower( worldPowerName,faction,startingIncome,capitalTerritory,guiColor);
 			
 			log.info("Stationing original starting troops");
 			

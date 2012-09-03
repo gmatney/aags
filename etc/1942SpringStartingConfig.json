@@ -2,6 +2,7 @@
 	{	"WorldPowerName":"SOVIET UNION",
 		"Faction"       :"ALLIES",
 		"StartingIncome":24,
+		"GuiColor":0xBD3737,
 		"CapitalTerritory":"Russia",
 		"TerritoryControlled":
 		[
@@ -74,6 +75,7 @@
 	{	"WorldPowerName":"GERMANY",
 		"Faction"       :"AXIS",
 		"StartingIncome":40,
+		"GuiColor":0xAAAAAA,
 		"CapitalTerritory":"Germany",
 		"TerritoryControlled":
 		[
@@ -167,6 +169,7 @@
 	{	"WorldPowerName":"BRITAIN",
 		"Faction"       :"ALLIES",
 		"StartingIncome":30,
+		"GuiColor":0xF7EE68,
 		"CapitalTerritory":"United Kingdom",
 		"TerritoryControlled":
 		[
@@ -251,6 +254,7 @@
 	{	"WorldPowerName":"JAPAN",
 		"Faction"       :"AXIS",
 		"StartingIncome":30,
+		"GuiColor":0xFF7519,
 		"CapitalTerritory":"Japan",
 		"TerritoryControlled":
 		[
@@ -342,6 +346,7 @@
 	{	"WorldPowerName":"UNITED STATES",
 		"Faction"       :"ALLIES",
 		"StartingIncome":42,
+		"GuiColor":0x48802E,
 		"CapitalTerritory":"Eastern U.S.",
 		"TerritoryControlled":
 		[

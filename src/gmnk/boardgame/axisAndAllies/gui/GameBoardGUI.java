@@ -1,8 +1,14 @@
 package gmnk.boardgame.axisAndAllies.gui;
 
 import gmnk.boardgame.axisAndAllies.CONSTANTS;
+import gmnk.boardgame.axisAndAllies.gameController.GameController;
 import gmnk.boardgame.axisAndAllies.territory.Territory;
+import gmnk.boardgame.axisAndAllies.territory.World;
+import gmnk.boardgame.axisAndAllies.units.StationedGroup;
+import gmnk.boardgame.axisAndAllies.units.UnitName;
 import gmnk.boardgame.axisAndAllies.units.UnitUtils;
+import gmnk.boardgame.axisAndAllies.worldPowers.WorldPowerName;
+import gmnk.boardgame.axisAndAllies.worldPowers.WorldPowers;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -22,6 +28,7 @@ import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
@@ -50,7 +57,8 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 	Territory mouseStartDrag;
 	int activeTerritory;
 	String gameMode = "Edit";
-	HashMap<Integer, Territory> territories;
+	GameController gameController;
+	World world;
 	
 	public GameBoardGUI() {
         KL newKeyListener = new KL();
@@ -61,8 +69,16 @@ public class GameBoardGUI extends JPanel implements ActionListener {
         addMouseWheelListener(newMouseListener);
         
         setFocusable(true);
+        gameController = new GameController();
+        try {
+            gameController.initializeGame();
+            world = gameController.getWorld();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 		initialize();
 	}
+	
 	public void initialize() {
 		try {
 		    File dir = new File(CONSTANTS.RESOURCE_PATH);
@@ -80,60 +96,15 @@ public class GameBoardGUI extends JPanel implements ActionListener {
         mousePos = new Point();
         DrawUtils.cam = cam;
         
-        territories = new HashMap<Integer, Territory>();
-        loadTerritoryConfig();
-        
         time = new Timer(5, this);
         time.start();
-	}
-	
-	public void loadTerritoryConfig() {
-	    String configPath = CONSTANTS.RESOURCE_PATH + CONSTANTS.TERRITORY_CONFIG;
-		try {
-		    BufferedReader in = new BufferedReader(new FileReader(configPath));
-		    String line;
-		    
-		    // Load territories (ignore neighbors for now).
-		    while ((line = in.readLine()) != null) {
-		    	String[] lineParts = line.split("\\|");
-		    	if(lineParts.length == 7 && !line.startsWith("#")) {
-		    	    int id = Integer.parseInt(lineParts[0]);
-		    	    String territoryName = lineParts[1];
-		    	    int ipcValue = Integer.parseInt(lineParts[2]);
-		    	    boolean hasVictoryCity = (lineParts[3].equalsIgnoreCase("Y"));
-		    	    String owningPower = lineParts[4];
-		    	    String[] centerString = lineParts[6].split(",");
-		    	    Point center = new Point(Integer.parseInt(centerString[0]), Integer.parseInt(centerString[1]));
-		    	    
-		    		Territory newTerritory = new Territory(id, territoryName, ipcValue, hasVictoryCity, owningPower, center);
-		        	territories.put(id, newTerritory);
-		    	}
-		    }
-		    
-		    // Load neighbors (have to do this in separate loop so that all countries are loaded first).
-		    in = new BufferedReader(new FileReader(configPath));
-		    while ((line = in.readLine()) != null) {
-		    	String[] lineParts = line.split("\\|");
-		    	if(lineParts.length == 7 && !line.startsWith("#")) {
-			    	int id = Integer.parseInt(lineParts[0]);
-			    	String[] neighbors = lineParts[5].split(",");
-			    	Territory t = territories.get(id);
-			    	for(String neighborStr : neighbors) {
-			    		Territory neighbor = territories.get(Integer.parseInt(neighborStr));
-			    		t.addNeighbor(neighbor);
-			    	}
-		    	}
-		    }
-		    in.close();
-		} catch (IOException e) {
-		}
 	}
 	
 	// Prints the config to the console.
 	public void saveTerritoryConfig() {
 	    for(int i = 0; i < 130; i++) {
-	        if(territories.get(i) != null)
-	            log(territories.get(i).toConfigString());
+	        if(world.getTerritoryById(i) != null)
+	            log(world.getTerritoryById(i).toConfigString());
 	    }
 	}
 	
@@ -171,6 +142,8 @@ public class GameBoardGUI extends JPanel implements ActionListener {
                 RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         g2d.setRenderingHint( RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setRenderingHint( RenderingHints.KEY_INTERPOLATION,
+                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g2d.setColor(Color.black);
         DrawUtils.g2d = g2d;
         
@@ -179,13 +152,13 @@ public class GameBoardGUI extends JPanel implements ActionListener {
         
         // Territory centers
         g2d.setColor(Color.red);
-        for(Territory t : territories.values()) {
+        for(Territory t : world.getTerritories().values()) {
         	if(t.getCenter() != null)
         		DrawUtils.fillRect(t.getCenter().x, t.getCenter().y, 10, 10);
         }
         
         // Lines connecting territories that are neighbors
-        Territory t = territories.get(activeTerritory);
+        Territory t = world.getTerritoryById(activeTerritory);
         if(t != null) {
 	    	for(Territory neighbor : t.getNeighbors()) {
 	    		if(neighbor != null && neighbor.getCenter() != null) {
@@ -195,17 +168,21 @@ public class GameBoardGUI extends JPanel implements ActionListener {
         }
         
         // Unit count in territories
-        for(Territory territory : territories.values()) {
-        	g2d.setColor(new Color(255, 255, 255, 128));
-        	LinkedHashMap<String, Integer> units = territory.getUnitTable(); 
-        	int numRows = units.keySet().size();
-        	DrawUtils.fillRect(territory.getCenter().x, territory.getCenter().y, 50, 15 * numRows + 5);
-        	g2d.setColor(Color.black);
-        	int rowCounter = 0;
-        	for(String unit : units.keySet()) {
-        		rowCounter++;
-        		DrawUtils.drawString(unit, territory.getCenter().x + 5, territory.getCenter().y + 15 * rowCounter);
-        		DrawUtils.drawString("" + units.get(unit), territory.getCenter().x + 30, territory.getCenter().y + 15 * rowCounter);
+        for(Territory territory : world.getTerritories().values()) {
+        	HashMap<WorldPowerName, StationedGroup> units = territory.getUnitsStationed();
+        	int powerCounter = 0;
+        	for(WorldPowerName power : units.keySet()) {
+        	    g2d.setColor(gameController.getWorldPowers().getPower(power).getColor());
+        	    StationedGroup stationedGroup = units.get(power);
+            	int numRows = stationedGroup.getNumberOfTypesOfUnitsStationed() + 1;
+            	DrawUtils.fillRect(territory.getCenter().x + 130 * powerCounter, territory.getCenter().y, 130, 15 * numRows + 5);
+            	g2d.setColor(Color.black);
+            	String unitString = power.name() + "\n";
+            	LinkedHashMap<UnitName, Integer> groupUnits = stationedGroup.getStationedUnits(); 
+            	for(UnitName unit : groupUnits.keySet()) {
+            	    unitString += unit.name() + "  " + groupUnits.get(unit) + "\n";
+            	}
+            	DrawUtils.drawString(unitString, territory.getCenter().x + 5, territory.getCenter().y);
         	}
         }
         
@@ -214,10 +191,10 @@ public class GameBoardGUI extends JPanel implements ActionListener {
         g2d.fillRect(0, 0, 350, 140);
         g2d.setColor(Color.black);
         g2d.drawString("Camera position: " + cam.getX() + ", " + cam.getY(), 5, 20);
-        Territory mouseTerritory = territories.get(activeTerritory);
+        Territory mouseTerritory = world.getTerritoryById(activeTerritory);
         if(mouseTerritory != null) {
             g2d.drawString("Mouse position: " + mousePos.x + ", " + mousePos.y, 5, 35);
-            g2d.drawString("Active territory: " + activeTerritory + " (" + territories.get(activeTerritory).getName() + ")", 5, 50);
+            g2d.drawString("Active territory: " + activeTerritory + " (" + world.getTerritoryById(activeTerritory).getName() + ")", 5, 50);
         }
         g2d.drawString("You are in " + gameMode + " mode", 5, 80);
         //g2d.drawString("  Press E to enter Edit mode", 5, 95);
@@ -257,7 +234,7 @@ public class GameBoardGUI extends JPanel implements ActionListener {
         	int mouseX = e.getX() + cam.getX();
         	int mouseY = e.getY() + cam.getY();
         	if(gameMode.equals("Edit")) {
-        		Territory clickedTerritory = territories.get(activeTerritory);
+        		Territory clickedTerritory = world.getTerritoryById(activeTerritory);
         		if(clickedTerritory != null) {
         			clickedTerritory.setCenter(new Point(mouseX, mouseY));
         		}
@@ -265,12 +242,12 @@ public class GameBoardGUI extends JPanel implements ActionListener {
         }
         public void mousePressed( MouseEvent e ) {
             if(gameMode.equals("Edit")) {
-                mouseStartDrag = territories.get(activeTerritory);
+                mouseStartDrag = world.getTerritoryById(activeTerritory);
             }
         }
         public void mouseReleased( MouseEvent e ) { 
             if(gameMode.equals("Edit")) {
-                Territory endTerritory = territories.get(activeTerritory); 
+                Territory endTerritory = world.getTerritoryById(activeTerritory); 
                 if(endTerritory == mouseStartDrag)
                     mouseClicked(e);
                 else if(endTerritory != null && mouseStartDrag != null) {
@@ -303,8 +280,8 @@ public class GameBoardGUI extends JPanel implements ActionListener {
         	//TODO or if we would need to create image maps for a set of scaling levels
         	//  EXAMPLE 10 different levels one can zoom in, each with their pair of images so no scaling was needed
         	cam.zoomFactor -= e.getPreciseWheelRotation();
-        	//cam.setX((int)(cam.getX() * (1 + cam.zoomFactor / 10)));
-        	//cam.setY((int)(cam.getY() * (1 + cam.zoomFactor / 10)));
+        	//cam.setX((int)(cam.getX() * (0.75f + e.getPreciseWheelRotation() / 20)));
+        	//cam.setY((int)(cam.getY() * (0.75f + e.getPreciseWheelRotation() / 20)));
         }
     }
     public int getMapWidth(){

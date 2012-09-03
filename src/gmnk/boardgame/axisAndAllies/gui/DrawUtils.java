@@ -27,6 +27,9 @@ public class DrawUtils {
 	}
 	
 	public static void drawString(String string, int x, int y) {
-		g2d.drawString(string, (int)(x * (1 + cam.zoomFactor / 10) - cam.getX()), (int)(y * (1 + cam.zoomFactor / 10) - cam.getY()));
+	    String[] lines = string.split("\\n");
+	    for(int i = 1; i <= lines.length; i++) {
+	        g2d.drawString(lines[i - 1], (int)(x * (1 + cam.zoomFactor / 10) - cam.getX()), (int)(y * (1 + cam.zoomFactor / 10) - cam.getY() + i * 15));
+	    }
 	}
 }

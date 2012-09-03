@@ -26,7 +26,8 @@ public class GameController {
 		log.info("Initalizing the Game");
 		w = new World();
 		log.info("Creating world");
-		File configFile = new File("/home/garnett/workspace/aags/etc/1942SpringStartingConfig.json");
+		File testFile = new File(".");
+		File configFile = new File("../etc/1942SpringStartingConfig.json");
 		Reader configReader = new FileReader(configFile);
 		log.info("Trying to using gson");
 		
@@ -63,6 +64,9 @@ public class GameController {
 	}
 	public World getWorld(){
 		return w;
+	}
+	public WorldPowers getWorldPowers() {
+	    return wp;
 	}
 	
 	
