@@ -1,5 +1,9 @@
 package gmnk.boardgame.axisAndAllies.worldPowers;
 
+import gmnk.boardgame.axisAndAllies.gameController.EnumInterpreter;
+import gmnk.boardgame.axisAndAllies.territory.World;
+import gmnk.boardgame.axisAndAllies.units.StationedGroup;
+
 import java.lang.reflect.Type;
 import java.util.Iterator;
 
@@ -13,7 +17,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
 public class WorldPowerJsonDeserializer implements JsonDeserializer<WorldPowers> {
-	private Logger log = Logger.getLogger(WorldPowerJsonDeserializer.class);
+	private static Logger log = Logger.getLogger(WorldPowerJsonDeserializer.class);
 	@Override
 	public WorldPowers deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context
 			) throws JsonParseException {
@@ -21,7 +25,7 @@ public class WorldPowerJsonDeserializer implements JsonDeserializer<WorldPowers>
 		log.error("Figure out how you got this to be called if not directly");
 		return deserialize(json);
 	}
-	public WorldPowers deserialize(JsonElement json) throws JsonParseException {
+	private WorldPowers deserialize(JsonElement json) throws JsonParseException {
 		log.debug("Inside WorldPowerDeserializer");
 		WorldPowers wps = new WorldPowers();
 		JsonArray worldPowers = json.getAsJsonObject().get("WorldPower").getAsJsonArray();
@@ -31,13 +35,61 @@ public class WorldPowerJsonDeserializer implements JsonDeserializer<WorldPowers>
 		
 		while(it.hasNext()){
 			JsonObject worldPower = it.next().getAsJsonObject();
-			String worldPowerName = worldPower.get("WorldPowerName").getAsString();
-			Faction faction = worldPower.get("Faction").getAsString().equalsIgnoreCase("AXIS")
-					? Faction.Axis : Faction.Alliance;
+			WorldPowerName worldPowerName = EnumInterpreter.getWorldPowerName( 
+					worldPower.get("WorldPowerName").getAsString());
+			Faction faction = EnumInterpreter.getFaction(
+					worldPower.get("Faction").getAsString()); 
 			int startingIncome = worldPower.get("StartingIncome").getAsInt(); 
-			
+			String capitalTerritory = World.getStandardizedTerritoryKey(
+					worldPower.get("capitalTerritory").getAsString());
 			log.info("Loading in WorldPower named '"+worldPowerName+"'");
-			WorldPower wp = new WorldPower( worldPowerName,faction,startingIncome);
+			WorldPower wp = new WorldPower( worldPowerName,faction,startingIncome,capitalTerritory);
+			//CANNOT POPULATE WORLD ELEMENT INDIRECTLY NOW
+			//WOULD NEED TO DO IF WANT TO USE
+			wps.addWorldPower(wp);
+		}
+		
+		return wps;
+	}
+	public WorldPowers deserialize(JsonElement json,World w) throws JsonParseException {
+		log.debug("Inside WorldPowerDeserializer");
+		WorldPowers wps = new WorldPowers();
+		JsonArray worldPowers = json.getAsJsonObject().get("WorldPower").getAsJsonArray();
+		log.debug("Found "+worldPowers.size()+" WorldPower JSON Objects");
+		
+		Iterator<JsonElement> it = worldPowers.iterator();
+		
+		while(it.hasNext()){
+			JsonObject worldPower = it.next().getAsJsonObject();
+			WorldPowerName worldPowerName = EnumInterpreter.getWorldPowerName( 
+					worldPower.get("WorldPowerName").getAsString());
+			Faction faction = EnumInterpreter.getFaction(
+					worldPower.get("Faction").getAsString()); 
+			int startingIncome = worldPower.get("StartingIncome").getAsInt(); 
+			String capitalTerritory = World.getStandardizedTerritoryKey(
+					worldPower.get("CapitalTerritory").getAsString());
+			log.info("Loading in WorldPower named '"+worldPowerName+"'");
+			WorldPower wp = new WorldPower( worldPowerName,faction,startingIncome,capitalTerritory);
+			
+			log.info("Stationing original starting troops");
+			
+			JsonArray startingTerr = worldPower.get("TerritoryControlled").getAsJsonArray();
+			for(int i=0; i<startingTerr.size();i++){
+				JsonObject terr = startingTerr.get(i).getAsJsonObject();
+				String terrName = World.getStandardizedTerritoryKey(terr.get("TerritoryName").getAsString()); 
+				wp.addTerritory(terrName);
+				JsonArray unitsStationed = terr.get("UnitsStationed").getAsJsonArray();
+				StationedGroup sg = new StationedGroup(worldPowerName);
+				for(JsonElement unitElem : unitsStationed){
+					JsonObject unit = unitElem.getAsJsonObject();
+					String type = unit.get("type").getAsString();
+					int quantity = unit.get("quantity").getAsInt();
+					sg.addUnit(EnumInterpreter.getUnitName(type), quantity);
+				}
+				w.addStationedGroupToTerritory(sg, terrName);
+			}
+			
+			
 			wps.addWorldPower(wp);
 		}
 		

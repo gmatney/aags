@@ -2,6 +2,7 @@ package gmnk.boardgame.axisAndAllies.gui;
 
 import gmnk.boardgame.axisAndAllies.CONSTANTS;
 import gmnk.boardgame.axisAndAllies.territory.Territory;
+import gmnk.boardgame.axisAndAllies.units.UnitUtils;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -30,9 +31,11 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import org.apache.log4j.Logger;
+
 
 public class GameBoardGUI extends JPanel implements ActionListener {
-
+	private static Logger log = Logger.getLogger(GameBoardGUI.class);
     public static final int WORLD_WIDTH = 1000;
     public static final int WORLD_HEIGHT = 700;
 
@@ -64,7 +67,9 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 		try {
 		    File dir = new File(CONSTANTS.RESOURCE_PATH);
 		    log(dir.getCanonicalPath());
-			mapImage = ImageIO.read(new File(CONSTANTS.RESOURCE_PATH + "AAmap_final.jpg"));
+		    String path = CONSTANTS.RESOURCE_PATH + "AAmap_final.jpg";
+		    log.info("Path = "+path);
+			mapImage = ImageIO.read(new File(path));
 			territoryOverlay = ImageIO.read(new File(CONSTANTS.RESOURCE_PATH + "AAmap_overlay_final.png"));
 		} catch (IOException e) {
 			e.printStackTrace();

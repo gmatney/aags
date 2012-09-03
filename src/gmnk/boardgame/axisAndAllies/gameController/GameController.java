@@ -4,23 +4,16 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.Reader;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
-import java.util.Hashtable;
 
 import org.apache.log4j.Logger;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonStreamParser;
 
 import gmnk.boardgame.axisAndAllies.territory.World;
 import gmnk.boardgame.axisAndAllies.worldPowers.Players;
-import gmnk.boardgame.axisAndAllies.worldPowers.WorldPower;
 import gmnk.boardgame.axisAndAllies.worldPowers.WorldPowerJsonDeserializer;
+import gmnk.boardgame.axisAndAllies.worldPowers.WorldPowerName;
 import gmnk.boardgame.axisAndAllies.worldPowers.WorldPowers;
 
 public class GameController {
@@ -33,7 +26,6 @@ public class GameController {
 		log.info("Initalizing the Game");
 		w = new World();
 		log.info("Creating world");
-		Gson g = new Gson();
 		File configFile = new File("/home/garnett/workspace/aags/etc/1942SpringStartingConfig.json");
 		Reader configReader = new FileReader(configFile);
 		log.info("Trying to using gson");
@@ -48,13 +40,13 @@ public class GameController {
 			JsonElement configJsonElement = s.next();
 
 
-			WorldPowers powers = wpDeser.deserialize(configJsonElement);
+			wp = wpDeser.deserialize(configJsonElement,w);
 			
 			//TODO figure out how to make this work (with the serializer you made)
 			//TODO not sure how to get GSON to know where to find my serializer
 			//WorldPowers powers = g.fromJson(configJsonElement, WorldPowers.class);
 			
-			log.info("SIZE =  "+powers.getPowersSize());
+			log.info("SIZE =  "+wp.getPowersSize());
 		}
 
 		
@@ -69,7 +61,9 @@ public class GameController {
 //		
 //		Hashtable<String,WorldPower> powers = wpDeser.deserialize(json, typeOfT, context);
 	}
-
+	public World getWorld(){
+		return w;
+	}
 	
 	
 	public static void main(String[] args) {
@@ -77,6 +71,9 @@ public class GameController {
 			
 			GameController g = new GameController();
 			g.initializeGame();
+			log.info("This should show troops for Germany:\n"+
+					g.getWorld().getTerritoryByName("GERMANY").getUnitsStationed(WorldPowerName.GERMANY)
+			);
 		}catch(Exception e){
 			log.error(e);
 			e.printStackTrace();

@@ -2,6 +2,7 @@
 	{	"WorldPowerName":"SOVIET UNION",
 		"Faction"       :"ALLIES",
 		"StartingIncome":24,
+		"CapitalTerritory":"Russia",
 		"TerritoryControlled":
 		[
 			{"TerritoryName":"Russia",
@@ -73,9 +74,10 @@
 	{	"WorldPowerName":"GERMANY",
 		"Faction"       :"AXIS",
 		"StartingIncome":40,
+		"CapitalTerritory":"Germany",
 		"TerritoryControlled":
 		[
-			{"TerritoryName":"GERMANY",
+			{"TerritoryName":"Germany",
 			"UnitsStationed":
 			[	{"type":"INFANTRY"            ,"quantity":3},
 				{"type":"TANK"                ,"quantity":2},
@@ -165,6 +167,7 @@
 	{	"WorldPowerName":"BRITAIN",
 		"Faction"       :"ALLIES",
 		"StartingIncome":30,
+		"CapitalTerritory":"United Kingdom",
 		"TerritoryControlled":
 		[
 			{"TerritoryName":"United Kingdom",
@@ -206,7 +209,7 @@
 			"UnitsStationed":
 			[	{"type":"INFANTRY"            ,"quantity":1}
 			]},
-			{"TerritoryName":"Anglo-Egypt",
+			{"TerritoryName":"Anglo Egypt Sudan",
 			"UnitsStationed":
 			[	{"type":"INFANTRY"            ,"quantity":1},
 				{"type":"TANK"                ,"quantity":1},
@@ -248,6 +251,7 @@
 	{	"WorldPowerName":"JAPAN",
 		"Faction"       :"AXIS",
 		"StartingIncome":30,
+		"CapitalTerritory":"Japan",
 		"TerritoryControlled":
 		[
 			{"TerritoryName":"Japan",
@@ -269,7 +273,7 @@
 			"UnitsStationed":
 			[	{"type":"INFANTRY"            ,"quantity":3}
 			]},	
-			{"TerritoryName":"French Indochina",
+			{"TerritoryName":"French Indo-China",
 			"UnitsStationed":
 			[	{"type":"INFANTRY"            ,"quantity":2},
 				{"type":"FIGHTER"             ,"quantity":1}
@@ -338,6 +342,7 @@
 	{	"WorldPowerName":"UNITED STATES",
 		"Faction"       :"ALLIES",
 		"StartingIncome":42,
+		"CapitalTerritory":"Eastern U.S.",
 		"TerritoryControlled":
 		[
 			{"TerritoryName":"Western U.S.",
@@ -365,7 +370,7 @@
 			"UnitsStationed":
 			[	{"type":"INFANTRY"            ,"quantity":1}
 			]},
-			{"TerritoryName":"Midway Islands",
+			{"TerritoryName":"Midway",
 			"UnitsStationed":
 			[	{"type":"INFANTRY"            ,"quantity":1}
 			]},
