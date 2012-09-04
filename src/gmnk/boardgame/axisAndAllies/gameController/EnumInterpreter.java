@@ -3,10 +3,28 @@ package gmnk.boardgame.axisAndAllies.gameController;
 import org.apache.log4j.Logger;
 
 import gmnk.boardgame.axisAndAllies.units.UnitName;
+import gmnk.boardgame.axisAndAllies.units.air.Bomber;
+import gmnk.boardgame.axisAndAllies.units.air.Fighter;
+import gmnk.boardgame.axisAndAllies.units.land.*;
+import gmnk.boardgame.axisAndAllies.units.sea.*;
+import gmnk.boardgame.axisAndAllies.units.types.UknownUnit;
+import gmnk.boardgame.axisAndAllies.units.types.UnitProfile;
 import gmnk.boardgame.axisAndAllies.worldPowers.Faction;
 import gmnk.boardgame.axisAndAllies.worldPowers.WorldPowerName;
 
 public class EnumInterpreter {
+	public static final Infantry        UNIT_PROFILE_INFANTRY         = new Infantry();
+	public static final Artillery       UNIT_PROFILE_ARTILLERY        = new Artillery();
+	public static final Tank            UNIT_PROFILE_TANK             = new Tank();
+	public static final Fighter         UNIT_PROFILE_FIGHTER          = new Fighter();
+	public static final Bomber          UNIT_PROFILE_BOMBER           = new Bomber();
+	public static final Submarine       UNIT_PROFILE_SUBMARINE        = new Submarine();
+	public static final Destroyer       UNIT_PROFILE_DESTROYER        = new Destroyer();
+	public static final Cruiser         UNIT_PROFILE_CRUISER          = new Cruiser();
+	public static final AircraftCarrier UNIT_PROFILE_AIRCRAFT_CARRIER = new AircraftCarrier();
+	public static final BattleShip      UNIT_PROFILE_BATTLESHIP       = new BattleShip();
+	public static final UknownUnit      UNIT_PROFILE_UKNOWN           = new UknownUnit(); 
+	
 	private static Logger log = Logger.getLogger(EnumInterpreter.class);
 	public static WorldPowerName getWorldPowerName(String s){
 		if(s==null){
@@ -61,52 +79,44 @@ public class EnumInterpreter {
 		}
 		s=s.trim().toUpperCase();
 		s=s.replaceAll(" ", "");
-		if(s.equals("INFANTRY")){
-			return UnitName.INFANTRY;
+		
+		switch(s){
+			case "INFANTRY"            : return UnitName.INFANTRY;
+			case "ARTILLERY"           : return UnitName.ARTILLERY;
+			case "TANK"                : return UnitName.TANK;
+			case "FIGHTER"             : return UnitName.FIGHTER;
+			case "BOMBER"              : return UnitName.BOMBER;
+			case "SUBMARINE"           : return UnitName.SUBMARINE;
+			case "TRANSPORT"           : return UnitName.TRANSPORT;
+			case "DESTROYER"           : return UnitName.DESTROYER;
+			case "CRUISER"             : return UnitName.CRUISER;
+			case "AIRCRAFT_CARRIER"    : return UnitName.AIRCRAFT_CARRIER;
+			case "BATTLESHIP"          : return UnitName.BATTLESHIP;
+			case "ANTIAIRCRAFTGUN"     : return UnitName.ANTIAIRCRAFTGUN;
+			case "AAGUN"               : return UnitName.ANTIAIRCRAFTGUN;
+			case "FACTORY"             : return UnitName.FACTORY;
+			case "INDUSTRIAL_COMPLEX"  : return UnitName.FACTORY;
 		}
-		if(s.equals("ARTILLERY")){
-			return UnitName.ARTILLERY;
-		}
-		if(s.equals("TANK")){
-			return UnitName.TANK;
-		}
-		if(s.equals("FIGHTER")){
-			return UnitName.FIGHTER;
-		}
-		if(s.equals("BOMBER")){
-			return UnitName.BOMBER;
-		}
-		if(s.equals("SUBMARINE")){
-			return UnitName.SUBMARINE;
-		}
-		if(s.equals("TRANSPORT")){
-			return UnitName.TRANSPORT;
-		}
-		if(s.equals("DESTROYER")){
-			return UnitName.DESTROYER;
-		}
-		if(s.equals("CRUISER")){
-			return UnitName.CRUISER;
-		}
-		if(s.equals("AIRCRAFT_CARRIER")){
-			return UnitName.AIRCRAFT_CARRIER;
-		}
-		if(s.equals("BATTLESHIP")){
-			return UnitName.BATTLESHIP;
-		}
-		if(s.equals("ANTIAIRCRAFTGUN")){
-			return UnitName.ANTIAIRCRAFTGUN;
-		}
-		if(s.equals("AAGUN")){
-			return UnitName.ANTIAIRCRAFTGUN;
-		}
-		if(s.equals("FACTORY")){
-			return UnitName.FACTORY;
-		}
-		if(s.equals("INDUSTRIAL_COMPLEX")){
-			return UnitName.FACTORY;
-		}
+		
+		
+		
 		log.error("UnitName String '"+s+"' not recognized, returning UKNOWN");
 		return UnitName.UNKOWN;
+	}
+	public static UnitProfile getUnitProfile(UnitName unit){
+		switch(unit){
+			case INFANTRY         : return UNIT_PROFILE_INFANTRY;
+			case ARTILLERY        : return UNIT_PROFILE_ARTILLERY;
+			case TANK             : return UNIT_PROFILE_TANK;
+			case FIGHTER          : return UNIT_PROFILE_FIGHTER;
+			case BOMBER           : return UNIT_PROFILE_BOMBER;
+			case SUBMARINE        : return UNIT_PROFILE_SUBMARINE;
+			case DESTROYER        : return UNIT_PROFILE_DESTROYER;
+			case CRUISER          : return UNIT_PROFILE_CRUISER;
+			case AIRCRAFT_CARRIER : return UNIT_PROFILE_AIRCRAFT_CARRIER;
+			case BATTLESHIP       : return UNIT_PROFILE_BATTLESHIP;
+		}
+		return UNIT_PROFILE_UKNOWN;
+		
 	}
 }

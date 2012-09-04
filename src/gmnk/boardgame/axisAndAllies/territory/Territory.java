@@ -82,7 +82,7 @@ public class Territory {
  		if(unitsStationed.containsKey(wpn)){
  			return unitsStationed.get(wpn);
  		}else{
- 			return new StationedGroup(wpn);
+ 			return new StationedGroup(this, wpn);
  		}
  	}
  	
@@ -96,7 +96,7 @@ public class Territory {
  			unitsStationed.put(units.getWorldPowerAllegence()
 	 			, UnitUtils.mergeStationedGroups(
 	 					unitsStationed.get(units.getWorldPowerAllegence()),
-	 					units
+	 					units, this
 	 			)
  			);
  		}else{

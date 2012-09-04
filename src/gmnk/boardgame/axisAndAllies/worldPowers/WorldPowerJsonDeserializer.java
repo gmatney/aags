@@ -84,7 +84,7 @@ public class WorldPowerJsonDeserializer implements JsonDeserializer<WorldPowers>
 				String terrName = World.getStandardizedTerritoryKey(terr.get("TerritoryName").getAsString()); 
 				wp.addTerritory(terrName);
 				JsonArray unitsStationed = terr.get("UnitsStationed").getAsJsonArray();
-				StationedGroup sg = new StationedGroup(worldPowerName);
+				StationedGroup sg = new StationedGroup(w.getTerritoryByName(terrName),worldPowerName);
 				for(JsonElement unitElem : unitsStationed){
 					JsonObject unit = unitElem.getAsJsonObject();
 					String type = unit.get("type").getAsString();

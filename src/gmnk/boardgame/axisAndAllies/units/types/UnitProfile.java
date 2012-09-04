@@ -1,8 +1,9 @@
-package gmnk.boardgame.axisAndAllies.units;
+package gmnk.boardgame.axisAndAllies.units.types;
 
 import gmnk.boardgame.axisAndAllies.territory.Territory;
+import gmnk.boardgame.axisAndAllies.units.UnitName;
 
-public class UnitProfile {
+public abstract class UnitProfile {
 	protected int cost;
 	protected int attack;
 	protected int defense;
@@ -29,6 +30,8 @@ public class UnitProfile {
 	public int getHitpoints(){
 		return hitpoints;
 	}
+	
+	public abstract UnitName getUnitName();
 	
 
 	public boolean canReachTerritoryToAttack(Territory Territory) {

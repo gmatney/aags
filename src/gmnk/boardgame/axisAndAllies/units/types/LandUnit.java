@@ -1,10 +1,11 @@
-package gmnk.boardgame.axisAndAllies.units;
+package gmnk.boardgame.axisAndAllies.units.types;
 
 import gmnk.boardgame.axisAndAllies.territory.SeaTerritory;
 import gmnk.boardgame.axisAndAllies.territory.Territory;
+import gmnk.boardgame.axisAndAllies.units.UnitName;
 import gmnk.boardgame.axisAndAllies.units.sea.Transport;
 
-public class LandUnit extends UnitProfile{
+public abstract class LandUnit extends UnitProfile{
 	private Transport transport;
 	
 	public boolean isInBoat(){
@@ -29,5 +30,7 @@ public class LandUnit extends UnitProfile{
 		}
 		return super.canReachTerritoryToAttack(territory);
 	}
+	@Override
+	public abstract UnitName getUnitName() ;
 	
 }
