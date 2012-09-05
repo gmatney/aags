@@ -4,34 +4,107 @@ import java.awt.event.KeyEvent;
 
 
 public class Camera {
+	//TODO need to be able to get the current screen dimension
+	enum ZOOM_MODE{
+		OnMapCenter,
+		OnMouseCenter,
+	}
+	private ZOOM_MODE zm = ZOOM_MODE.OnMapCenter;
     private boolean up, down, left, right;
     private int x, y;
     private int xVel = 30;
     private int yVel = 30;
-    private int maxWidth;
-    private int maxHeight;
-    public double zoomFactor;
-    
-    public Camera(int maxWidth, int maxHeight){
-        this.maxHeight = maxHeight;
-        this.maxWidth  = maxWidth;
+    private int mouseX = 0;
+    private int mouseY = 0;
+    private int realImageWidth;
+    private int realImageHeight;
+
+	private int screenWidth;
+    private int screenHeight;
+    private double zoomFactor=0;
+
+    public ZOOM_MODE getZoomMode(){
+    	return zm;
     }
+    
+    public void setMouseX(int mouseX) {
+		this.mouseX = mouseX;
+	}
+
+
+	public void setMouseY(int mouseY) {
+		this.mouseY = mouseY;
+	}
+
+
+	public Camera(int imageWidth, int imageHeight){
+        this.realImageHeight = imageHeight;
+        this.realImageWidth  = imageWidth;
+    }
+    
+    
+    public void adjustZoomFactorBy(double adjustment){
+    	int oldZoomWidth = getZoomWidth();
+    	int oldZoomHeigth = getZoomHeight();
+    	zoomFactor = zoomFactor - adjustment;
+    	if(zm == ZOOM_MODE.OnMapCenter){
+        	x = x + ((getZoomWidth() - oldZoomWidth) /4);
+        	y = y + ((getZoomHeight() - oldZoomHeigth) /4);
+    	}
+    	else if(zm == ZOOM_MODE.OnMouseCenter){
+    		//Keep working on
+    		//Need MAP position on map, not only screen
+    		x = x+mouseX + ((getZoomWidth() - oldZoomWidth) /4);
+        	y = y+mouseY + ((getZoomHeight() - oldZoomHeigth) /4);
+    	}
+    	else{
+    		//Zoom off of 0,0
+    	}
+    	
+    }
+    public double getZoomFactor(){
+    	return zoomFactor;
+    }
+    
+    public int getScreenHalfWidth(){
+    	return (screenWidth/2);
+    }
+    public int getScreenHalfHeight(){
+    	return (screenHeight/2);
+    }
+    public int getCameraCenterX(){
+    	return x+getScreenHalfWidth();
+    }
+    public int getCameraCenterY(){
+    	return y+getScreenHalfHeight();
+    }
+    
+    
+    public int getScreenWidth() {
+		return screenWidth;
+	}
+	public void setScreenWidth(int screenWidth) {
+		this.screenWidth = screenWidth;
+	}
+
+	public int getScreenHeight() {
+		return screenHeight;
+	}
+
+	public void setScreenHeight(int screenHeight) {
+		this.screenHeight = screenHeight;
+	}
+    
 
     public int getX() {
-        return x;
+    	return x;
     }
 
-    public void setX(int x) {
-        this.x = x;
-    }
 
     public int getY() {
-        return y;
+    	return y;
     }
 
-    public void setY(int y) {
-        this.y = y;
-    }
     
     public void update()
     {
@@ -44,8 +117,8 @@ public class Camera {
         }
         if(down){
         	int newY = y + yVel; 
-        	if(newY>maxHeight){
-        		newY=maxHeight;
+        	if(newY>getZoomHeight()-screenHeight){
+        		newY=getZoomHeight()-screenHeight;
         	}
             y = newY;
         }
@@ -58,12 +131,22 @@ public class Camera {
         }
         if(right){
         	int newX= x + xVel; 
-        	if(newX>maxWidth){
-        		newX=maxWidth;
+        	if(newX>getZoomWidth()-screenWidth){
+        		newX=getZoomWidth()-screenWidth;
         	}
             x = newX;
         }
             
+    }
+    public double getZoomMultiple(double factor){
+    	return (1 + factor / 10);
+    }
+    
+    public int getZoomWidth(){
+    	return (int) (realImageWidth  * getZoomMultiple(zoomFactor));
+    }
+    public int getZoomHeight(){
+    	return (int) (realImageHeight * getZoomMultiple(zoomFactor));
     }
     
     public void keyPressed(KeyEvent e) {    

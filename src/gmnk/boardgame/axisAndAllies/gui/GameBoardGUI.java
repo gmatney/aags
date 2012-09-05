@@ -91,8 +91,6 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 			e.printStackTrace();
 		}
         cam = new Camera(getMapWidth()-this.getWidth(),getMapHeight()-this.getHeight());
-        cam.setX(WORLD_WIDTH / 2);
-        cam.setY(WORLD_HEIGHT / 2);
         mousePos = new Point();
         DrawUtils.cam = cam;
         
@@ -145,10 +143,16 @@ public class GameBoardGUI extends JPanel implements ActionListener {
         g2d.setRenderingHint( RenderingHints.KEY_INTERPOLATION,
                 RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g2d.setColor(Color.black);
+        
+        cam.setScreenWidth(g.getClipBounds().width);
+        cam.setScreenHeight(g.getClipBounds().height);
+        
         DrawUtils.g2d = g2d;
         
         // Background map image
+        //DrawUtils.drawImage(mapImage, new Point(cam.getScreenHalfWidth()+cam.getX(), cam.getScreenHalfHeight()+cam.getY()));
         DrawUtils.drawImage(mapImage, new Point(0, 0));
+        
         
         // Territory centers
         g2d.setColor(Color.red);
@@ -185,23 +189,36 @@ public class GameBoardGUI extends JPanel implements ActionListener {
             	DrawUtils.drawString(unitString, territory.getCenter().x + 5, territory.getCenter().y);
         	}
         }
+        int textPos = 5;
+        int textMov = 15;
         
         // HUD overlay
         g2d.setColor(Color.white);
-        g2d.fillRect(0, 0, 350, 140);
+        g2d.fillRect(0, 0, 350, 240);
         g2d.setColor(Color.black);
-        g2d.drawString("Camera position: " + cam.getX() + ", " + cam.getY(), 5, 20);
+        g2d.drawString("Camera position: " + cam.getX() + ", " + cam.getY(), 5, (textPos+=textMov));
+        g2d.drawString("Camera Center:   " + cam.getCameraCenterX() + ", " + cam.getCameraCenterY(), 5, (textPos+=textMov));
+        g2d.drawString("Mouse position:  " + mousePos.x + ", " + mousePos.y, 5, (textPos+=textMov));
+        g2d.drawString("Zoom Mode: "      + cam.getZoomMode(), 5, (textPos+=textMov));
+        g2d.drawString("Zoom Factor: "      + cam.getZoomFactor(), 5, (textPos+=textMov));
+        g2d.drawString("Map Dimensions:  " + getMapWidth() + ", " + getMapHeight(),5,(textPos+=textMov));
+        g2d.drawString("Zoom Dimensions: " + cam.getZoomWidth() + ", " + cam.getZoomHeight(),5,(textPos+=textMov));
+        g2d.drawString("Zoom Multiple: " + cam.getZoomMultiple(cam.getZoomFactor()),5,(textPos+=textMov));
+        g2d.drawString("Screen Size:     " + cam.getScreenWidth() + ", " + cam.getScreenHeight(),5,(textPos+=textMov));
         Territory mouseTerritory = world.getTerritoryById(activeTerritory);
         if(mouseTerritory != null) {
-            g2d.drawString("Mouse position: " + mousePos.x + ", " + mousePos.y, 5, 35);
-            g2d.drawString("Active territory: " + activeTerritory + " (" + world.getTerritoryById(activeTerritory).getName() + ")", 5, 50);
+            
+            g2d.drawString("Active territory: " + activeTerritory + " (" 
+            + world.getTerritoryById(activeTerritory).getName() + ")", 5, textPos+=textMov);
+            
+            
         }
-        g2d.drawString("You are in " + gameMode + " mode", 5, 80);
+        g2d.drawString("You are in " + gameMode + " mode", 5, (textPos+=textMov));
         //g2d.drawString("  Press E to enter Edit mode", 5, 95);
         //g2d.drawString("  Press P to enter Play mode (does nothing currently)", 5, 110);
-        g2d.drawString("  Press N to print a new config to the console", 5, 95);
-        g2d.drawString("  Click on a territory to define the center", 5, 110);
-        g2d.drawString("  Click and drag between two territories to toggle neighbors", 5, 125);
+        g2d.drawString("  Press N to print a new config to the console", 5, (textPos+=textMov));
+        g2d.drawString("  Click on a territory to define the center", 5, (textPos+=textMov));
+        g2d.drawString("  Click and drag between two territories to toggle neighbors", 5, (textPos+=textMov));
     }
     
     private class KL implements KeyListener
@@ -269,17 +286,22 @@ public class GameBoardGUI extends JPanel implements ActionListener {
         public void mouseMoved( MouseEvent e ) {
         	mousePos.x = e.getX();
         	mousePos.y = e.getY();
+        	cam.setMouseX(mousePos.x);
+        	cam.setMouseY(mousePos.y);
         }
         public void mouseDragged( MouseEvent e ) {  
             mousePos.x = e.getX();
             mousePos.y = e.getY();
+        	cam.setMouseX(mousePos.x);
+        	cam.setMouseY(mousePos.y);
         }
         public void mouseWheelMoved(MouseWheelEvent e) {
         	//TODO allow zooming in and out on the map.
         	//TODO not sure if the scaling would take too much processing
         	//TODO or if we would need to create image maps for a set of scaling levels
         	//  EXAMPLE 10 different levels one can zoom in, each with their pair of images so no scaling was needed
-        	cam.zoomFactor -= e.getPreciseWheelRotation();
+        	cam.adjustZoomFactorBy( e.getPreciseWheelRotation());
+        	
         	//cam.setX((int)(cam.getX() * (0.75f + e.getPreciseWheelRotation() / 20)));
         	//cam.setY((int)(cam.getY() * (0.75f + e.getPreciseWheelRotation() / 20)));
         }
