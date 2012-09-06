@@ -198,13 +198,23 @@ public class GameBoardGUI extends JPanel implements ActionListener {
         g2d.setColor(Color.black);
         g2d.drawString("Camera position: " + cam.getX() + ", " + cam.getY(), 5, (textPos+=textMov));
         g2d.drawString("Camera Center:   " + cam.getCameraCenterX() + ", " + cam.getCameraCenterY(), 5, (textPos+=textMov));
+        
+        g2d.drawString("Cam-Pos Relative:" + String.format("%1$,.6f",cam.getImageRelativeX())
+        		+ ", " + String.format("%1$,.6f",cam.getImageRelativeY()), 5, (textPos+=textMov));
+        g2d.drawString("Cam-Center-Rel:  " + String.format("%1$,.6f",cam.getCamCenterImageRelativeX())
+        		+ ", " + String.format("%1$,.6f",cam.getCamCenterImageRelativeY()), 5, (textPos+=textMov));
+        g2d.drawString("Cam-Mouse-Rel:  " + String.format("%1$,.6f",cam.getImageRelativeMouseX())
+        		+ ", " + String.format("%1$,.6f",cam.getImageRelativeMouseY()), 5, (textPos+=textMov));        
         g2d.drawString("Mouse position:  " + mousePos.x + ", " + mousePos.y, 5, (textPos+=textMov));
+        g2d.drawString("CamScrnMousePos:  " + cam.getScreenMouseX() + ", " + cam.getScreenMouseY(), 5, (textPos+=textMov));
+        g2d.drawString("CamZoomMousePos:  " + cam.getCurrentZoomMouseX() + ", " + cam.getCurrentZoomMouseY(), 5, (textPos+=textMov));
         g2d.drawString("Zoom Mode: "      + cam.getZoomMode(), 5, (textPos+=textMov));
         g2d.drawString("Zoom Factor: "      + cam.getZoomFactor(), 5, (textPos+=textMov));
         g2d.drawString("Map Dimensions:  " + getMapWidth() + ", " + getMapHeight(),5,(textPos+=textMov));
         g2d.drawString("Zoom Dimensions: " + cam.getZoomWidth() + ", " + cam.getZoomHeight(),5,(textPos+=textMov));
         g2d.drawString("Zoom Multiple: " + cam.getZoomMultiple(cam.getZoomFactor()),5,(textPos+=textMov));
         g2d.drawString("Screen Size:     " + cam.getScreenWidth() + ", " + cam.getScreenHeight(),5,(textPos+=textMov));
+        
         Territory mouseTerritory = world.getTerritoryById(activeTerritory);
         if(mouseTerritory != null) {
             
@@ -286,14 +296,14 @@ public class GameBoardGUI extends JPanel implements ActionListener {
         public void mouseMoved( MouseEvent e ) {
         	mousePos.x = e.getX();
         	mousePos.y = e.getY();
-        	cam.setMouseX(mousePos.x);
-        	cam.setMouseY(mousePos.y);
+        	cam.setScreenMouseX(mousePos.x);
+        	cam.setScreenMouseY(mousePos.y);
         }
         public void mouseDragged( MouseEvent e ) {  
             mousePos.x = e.getX();
             mousePos.y = e.getY();
-        	cam.setMouseX(mousePos.x);
-        	cam.setMouseY(mousePos.y);
+        	cam.setScreenMouseX(mousePos.x);
+        	cam.setScreenMouseY(mousePos.y);
         }
         public void mouseWheelMoved(MouseWheelEvent e) {
         	//TODO allow zooming in and out on the map.

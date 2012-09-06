@@ -1,21 +1,41 @@
 package gmnk.boardgame.axisAndAllies.gui;
 
 import java.awt.event.KeyEvent;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.log4j.Logger;
+
+import sun.util.logging.resources.logging;
 
 
 public class Camera {
 	//TODO need to be able to get the current screen dimension
+	private static Logger log = Logger.getLogger(Camera.class);
 	enum ZOOM_MODE{
-		OnMapCenter,
-		OnMouseCenter,
+		 ON_MAP_CENTER
+		,PUT_MOUSE_OVER_IN_CENTER
+		,MOUSE_OVER_ADJUSTED
+		//,ZOOM_TOWARDS_MAP //TODO
 	}
-	private ZOOM_MODE zm = ZOOM_MODE.OnMapCenter;
+	
+	private ZOOM_MODE zm = ZOOM_MODE.MOUSE_OVER_ADJUSTED;
+	
+	private long lastZoomTime;
+	private double lastFocalZoomRelativeX;
+	private double lastFocalZoomRelativeY;
+	
     private boolean up, down, left, right;
     private int x, y;
     private int xVel = 30;
     private int yVel = 30;
-    private int mouseX = 0;
-    private int mouseY = 0;
+    public int getScreenMouseX() {
+		return screenMouseX;
+	}
+
+	private int screenMouseX = 0;
+    private int screenMouseY = 0;
+
+    
     private int realImageWidth;
     private int realImageHeight;
 
@@ -26,37 +46,108 @@ public class Camera {
     public ZOOM_MODE getZoomMode(){
     	return zm;
     }
-    
-    public void setMouseX(int mouseX) {
-		this.mouseX = mouseX;
-	}
-
-
-	public void setMouseY(int mouseY) {
-		this.mouseY = mouseY;
-	}
-
 
 	public Camera(int imageWidth, int imageHeight){
         this.realImageHeight = imageHeight;
         this.realImageWidth  = imageWidth;
     }
-    
+	public double getImageRelativeX(){
+		return x/ (getZoomWidth()+0.0);
+	}
+	public double getImageRelativeY(){
+		return y/ (getZoomHeight()+0.0);
+	}
+	public double getImageRelativeMouseX(){
+		return (x+screenMouseX)/ (getZoomWidth()+0.0);
+	}
+	public double getImageRelativeMouseY(){
+		return (y+screenMouseY)/ (getZoomHeight()+0.0);
+	}
+	public double getCamCenterImageRelativeY(){
+		return getCameraCenterY()/ (getZoomHeight()+0.0);
+	}
+	public double getCamCenterImageRelativeX(){
+		return getCameraCenterX()/ (getZoomWidth()+0.0);
+	}
     
     public void adjustZoomFactorBy(double adjustment){
-    	int oldZoomWidth = getZoomWidth();
-    	int oldZoomHeigth = getZoomHeight();
-    	zoomFactor = zoomFactor - adjustment;
-    	if(zm == ZOOM_MODE.OnMapCenter){
-        	x = x + ((getZoomWidth() - oldZoomWidth) /4);
-        	y = y + ((getZoomHeight() - oldZoomHeigth) /4);
+    	if(zm == ZOOM_MODE.ON_MAP_CENTER){
+        	double oldImgrelX = getCamCenterImageRelativeX();
+        	double oldImgrelY = getCamCenterImageRelativeY();    	
+        	zoomFactor = zoomFactor - adjustment;
+        	x = (int)((getZoomWidth()  * oldImgrelX) -getScreenHalfWidth());
+        	y = (int)((getZoomHeight() * oldImgrelY) -getScreenHalfHeight());
+        	updateX();
+        	updateY();
     	}
-    	else if(zm == ZOOM_MODE.OnMouseCenter){
-    		//Keep working on
-    		//Need MAP position on map, not only screen
-    		x = x+mouseX + ((getZoomWidth() - oldZoomWidth) /4);
-        	y = y+mouseY + ((getZoomHeight() - oldZoomHeigth) /4);
+    	else if(zm == ZOOM_MODE.PUT_MOUSE_OVER_IN_CENTER){
+        	double oldImgrelX = getImageRelativeMouseX();
+        	double oldImgrelY = getImageRelativeMouseY();
+        	zoomFactor = zoomFactor - adjustment;
+        	
+        	//zoomFactor = 1; //Make the zoom easier
+        	
+        	double newZoomMousePosX = oldImgrelX * getZoomWidth();
+        	double newZoomMousePosY = oldImgrelY * getZoomHeight();
+        	
+        	//This causes the map to center on the picture the mouse was on
+        	x = ((int)newZoomMousePosX) - getScreenHalfWidth();
+        	y = ((int)newZoomMousePosY) - getScreenHalfHeight() ;
+        	
+        	updateX();
+        	updateY();	
     	}
+    	else if(zm == ZOOM_MODE.PUT_MOUSE_OVER_IN_CENTER){
+        	double oldImgrelX = getImageRelativeMouseX();
+        	double oldImgrelY = getImageRelativeMouseY();
+        	zoomFactor = zoomFactor - adjustment;
+        	
+        	//zoomFactor = 1; //Make the zoom easier
+        	
+        	double newZoomMousePosX = oldImgrelX * getZoomWidth();
+        	double newZoomMousePosY = oldImgrelY * getZoomHeight();
+        	
+        	//This causes the map to center on the picture the mouse was on
+        	x = ((int)newZoomMousePosX) - getScreenHalfWidth();
+        	y = ((int)newZoomMousePosY) - getScreenHalfHeight() ;
+        	
+        	updateX();
+        	updateY();	
+    	}
+    	else if(zm == ZOOM_MODE.MOUSE_OVER_ADJUSTED){
+
+    		long diff = (System.currentTimeMillis()-lastZoomTime);
+    		long acceptable = TimeUnit.MILLISECONDS.convert(1, TimeUnit.SECONDS);
+    		log.debug("Is "+acceptable+" < "+ diff+"?");
+    		
+        	if( //See if you zoomed in the last little bit
+        			diff < acceptable
+        	){
+        		//DONT CHANGE THE LAST FOCAL ZOOM
+        		log.warn("About to do something interesting");
+        	}
+        	else{
+        		
+            	lastFocalZoomRelativeX = getImageRelativeMouseX();
+            	lastFocalZoomRelativeY = getImageRelativeMouseY();
+        	}
+        	zoomFactor = zoomFactor - adjustment;
+        	double newZoomMousePosX = lastFocalZoomRelativeX * getZoomWidth();
+        	double newZoomMousePosY = lastFocalZoomRelativeY * getZoomHeight();
+        	
+        	//This causes the map to center on the picture the mouse was on
+        	//Though if you have been zooming recently it will be centered on what
+        	//You first mapped over
+        	x = ((int)newZoomMousePosX) - getScreenHalfWidth();
+        	y = ((int)newZoomMousePosY) - getScreenHalfHeight() ;
+
+        	
+        	lastZoomTime=System.currentTimeMillis();
+        	
+        	updateX();
+        	updateY();	
+    	}
+    	
     	else{
     		//Zoom off of 0,0
     	}
@@ -96,47 +187,39 @@ public class Camera {
 	}
     
 
-    public int getX() {
-    	return x;
-    }
+    public int getX() {return x;}
 
 
-    public int getY() {
-    	return y;
-    }
-
+    public int getY() {return y;}
     
-    public void update()
-    {
+    private void updateX(){
+    	int maxWidth = getZoomWidth()-screenWidth;
+    	if(x<0){x=0;}
+    	if(x>maxWidth){x=maxWidth;}
+    }
+    private void updateY(){
+    	int maxHeight=getZoomHeight()-screenHeight;
+    	if(y<0){y=0;}
+    	if(y>maxHeight){y=maxHeight;}
+    }
+    
+    public void update(){
         if(up){
-        	int newY = y - yVel; 
-        	if(newY<0){
-        		newY=0;
-        	}
-            y = newY;
+        	y = y - yVel; 
+        	updateY();
         }
         if(down){
-        	int newY = y + yVel; 
-        	if(newY>getZoomHeight()-screenHeight){
-        		newY=getZoomHeight()-screenHeight;
-        	}
-            y = newY;
+        	y = y + yVel;
+        	updateY();
         }
         if(left){
-        	int newX= x - xVel; 
-        	if(newX<0){
-        		newX=0;
-        	}
-            x = newX;
+        	x = x - xVel;
+        	updateX();
         }
         if(right){
-        	int newX= x + xVel; 
-        	if(newX>getZoomWidth()-screenWidth){
-        		newX=getZoomWidth()-screenWidth;
-        	}
-            x = newX;
+        	x = x + xVel;
+        	updateX();
         }
-            
     }
     public double getZoomMultiple(double factor){
     	return (1 + factor / 10);
@@ -173,4 +256,26 @@ public class Camera {
         case KeyEvent.VK_RIGHT: right = false; break;    
         }   
     }
+    
+	public void setScreenMouseX(int screenMouseX) {
+		this.screenMouseX = screenMouseX;
+	}
+
+	public int getScreenMouseY() {
+		return screenMouseY;
+	}
+
+	public void setScreenMouseY(int screenMouseY) {
+		this.screenMouseY = screenMouseY;
+	}
+	
+	
+    public int getCurrentZoomMouseX() {
+		return screenMouseX+x;
+	}
+
+	public int getCurrentZoomMouseY() {
+		return screenMouseY+y;
+	}
+
 }
