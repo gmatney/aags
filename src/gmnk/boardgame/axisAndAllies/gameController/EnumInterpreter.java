@@ -7,7 +7,7 @@ import gmnk.boardgame.axisAndAllies.units.air.Bomber;
 import gmnk.boardgame.axisAndAllies.units.air.Fighter;
 import gmnk.boardgame.axisAndAllies.units.land.*;
 import gmnk.boardgame.axisAndAllies.units.sea.*;
-import gmnk.boardgame.axisAndAllies.units.types.UknownUnit;
+import gmnk.boardgame.axisAndAllies.units.types.UnknownUnit;
 import gmnk.boardgame.axisAndAllies.units.types.UnitProfile;
 import gmnk.boardgame.axisAndAllies.worldPowers.Faction;
 import gmnk.boardgame.axisAndAllies.worldPowers.WorldPowerName;
@@ -23,7 +23,7 @@ public class EnumInterpreter {
 	public static final Cruiser         UNIT_PROFILE_CRUISER          = new Cruiser();
 	public static final AircraftCarrier UNIT_PROFILE_AIRCRAFT_CARRIER = new AircraftCarrier();
 	public static final BattleShip      UNIT_PROFILE_BATTLESHIP       = new BattleShip();
-	public static final UknownUnit      UNIT_PROFILE_UKNOWN           = new UknownUnit(); 
+	public static final UnknownUnit     UNIT_PROFILE_UNKNOWN          = new UnknownUnit(); 
 	
 	private static Logger log = Logger.getLogger(EnumInterpreter.class);
 	public static WorldPowerName getWorldPowerName(String s){
@@ -69,39 +69,39 @@ public class EnumInterpreter {
 		if(s.equals("ALLIANCE")){
 			return Faction.Alliance;
 		}
-		log.error("Faction String '"+s+"' not recognized, returning UKNOWN");
+		log.error("Faction String '"+s+"' not recognized, returning UNKNOWN");
 		return Faction.UNKNOWN;
 	}
 	public static UnitName getUnitName(String s){
 		if(s==null){
 			log.error("NULL entered for UnitName String, returning UNKNOWN");
-			return UnitName.UNKOWN;
+			return UnitName.UNKNOWN;
 		}
 		s=s.trim().toUpperCase();
 		s=s.replaceAll(" ", "");
 		
-		switch(s){
-			case "INFANTRY"            : return UnitName.INFANTRY;
-			case "ARTILLERY"           : return UnitName.ARTILLERY;
-			case "TANK"                : return UnitName.TANK;
-			case "FIGHTER"             : return UnitName.FIGHTER;
-			case "BOMBER"              : return UnitName.BOMBER;
-			case "SUBMARINE"           : return UnitName.SUBMARINE;
-			case "TRANSPORT"           : return UnitName.TRANSPORT;
-			case "DESTROYER"           : return UnitName.DESTROYER;
-			case "CRUISER"             : return UnitName.CRUISER;
-			case "AIRCRAFT_CARRIER"    : return UnitName.AIRCRAFT_CARRIER;
-			case "BATTLESHIP"          : return UnitName.BATTLESHIP;
-			case "ANTIAIRCRAFTGUN"     : return UnitName.ANTIAIRCRAFTGUN;
-			case "AAGUN"               : return UnitName.ANTIAIRCRAFTGUN;
-			case "FACTORY"             : return UnitName.FACTORY;
-			case "INDUSTRIAL_COMPLEX"  : return UnitName.FACTORY;
-		}
+//		switch(s){
+//			case "INFANTRY"            : return UnitName.INFANTRY;
+//			case "ARTILLERY"           : return UnitName.ARTILLERY;
+//			case "TANK"                : return UnitName.TANK;
+//			case "FIGHTER"             : return UnitName.FIGHTER;
+//			case "BOMBER"              : return UnitName.BOMBER;
+//			case "SUBMARINE"           : return UnitName.SUBMARINE;
+//			case "TRANSPORT"           : return UnitName.TRANSPORT;
+//			case "DESTROYER"           : return UnitName.DESTROYER;
+//			case "CRUISER"             : return UnitName.CRUISER;
+//			case "AIRCRAFT_CARRIER"    : return UnitName.AIRCRAFT_CARRIER;
+//			case "BATTLESHIP"          : return UnitName.BATTLESHIP;
+//			case "ANTIAIRCRAFTGUN"     : return UnitName.ANTIAIRCRAFTGUN;
+//			case "AAGUN"               : return UnitName.ANTIAIRCRAFTGUN;
+//			case "FACTORY"             : return UnitName.FACTORY;
+//			case "INDUSTRIAL_COMPLEX"  : return UnitName.FACTORY;
+//		}
 		
 		
 		
-		log.error("UnitName String '"+s+"' not recognized, returning UKNOWN");
-		return UnitName.UNKOWN;
+		log.error("UnitName String '"+s+"' not recognized, returning UNKNOWN");
+		return UnitName.UNKNOWN;
 	}
 	public static UnitProfile getUnitProfile(UnitName unit){
 		switch(unit){
@@ -116,7 +116,7 @@ public class EnumInterpreter {
 			case AIRCRAFT_CARRIER : return UNIT_PROFILE_AIRCRAFT_CARRIER;
 			case BATTLESHIP       : return UNIT_PROFILE_BATTLESHIP;
 		}
-		return UNIT_PROFILE_UKNOWN;
+		return UNIT_PROFILE_UNKNOWN;
 		
 	}
 }

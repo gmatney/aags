@@ -14,5 +14,5 @@ public enum UnitName {
 	AIRCRAFT_CARRIER,
 	BATTLESHIP,
 	FACTORY,
-	UNKOWN
+	UNKNOWN
 }
