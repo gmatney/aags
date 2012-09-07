@@ -15,10 +15,10 @@ public class Camera {
 		 ON_MAP_CENTER
 		,PUT_MOUSE_OVER_IN_CENTER
 		,MOUSE_OVER_ADJUSTED
-		//,ZOOM_TOWARDS_MAP //TODO
+		,ZOOM_TOWARDS_MOUSE //TODO
 	}
 	
-	private ZOOM_MODE zm = ZOOM_MODE.MOUSE_OVER_ADJUSTED;
+	private ZOOM_MODE zm = ZOOM_MODE.ZOOM_TOWARDS_MOUSE;
 	
 	private long lastZoomTime;
 	private double lastFocalZoomRelativeX;
@@ -36,12 +36,13 @@ public class Camera {
     private int screenMouseY = 0;
 
     
-    private int realImageWidth;
-    private int realImageHeight;
+    private final int realImageWidth;
+    private final int realImageHeight;
 
 	private int screenWidth;
     private int screenHeight;
     private double zoomFactor=0;
+    private double zoomNegativeLimit=-7;
 
     public ZOOM_MODE getZoomMode(){
     	return zm;
@@ -71,6 +72,14 @@ public class Camera {
 	}
     
     public void adjustZoomFactorBy(double adjustment){
+    	if(zoomFactor -adjustment < zoomNegativeLimit){
+    		//zoomFactor = zoomNegativeLimit -1;
+    		//TODO force zoom factor to make 
+    		//getZoomWidth return realImageWidth
+    	}
+    	
+    	
+    	
     	if(zm == ZOOM_MODE.ON_MAP_CENTER){
         	double oldImgrelX = getCamCenterImageRelativeX();
         	double oldImgrelY = getCamCenterImageRelativeY();    	
@@ -84,25 +93,6 @@ public class Camera {
         	double oldImgrelX = getImageRelativeMouseX();
         	double oldImgrelY = getImageRelativeMouseY();
         	zoomFactor = zoomFactor - adjustment;
-        	
-        	//zoomFactor = 1; //Make the zoom easier
-        	
-        	double newZoomMousePosX = oldImgrelX * getZoomWidth();
-        	double newZoomMousePosY = oldImgrelY * getZoomHeight();
-        	
-        	//This causes the map to center on the picture the mouse was on
-        	x = ((int)newZoomMousePosX) - getScreenHalfWidth();
-        	y = ((int)newZoomMousePosY) - getScreenHalfHeight() ;
-        	
-        	updateX();
-        	updateY();	
-    	}
-    	else if(zm == ZOOM_MODE.PUT_MOUSE_OVER_IN_CENTER){
-        	double oldImgrelX = getImageRelativeMouseX();
-        	double oldImgrelY = getImageRelativeMouseY();
-        	zoomFactor = zoomFactor - adjustment;
-        	
-        	//zoomFactor = 1; //Make the zoom easier
         	
         	double newZoomMousePosX = oldImgrelX * getZoomWidth();
         	double newZoomMousePosY = oldImgrelY * getZoomHeight();
@@ -147,7 +137,21 @@ public class Camera {
         	updateX();
         	updateY();	
     	}
-    	
+    	else if(zm == ZOOM_MODE.ZOOM_TOWARDS_MOUSE){
+        	double oldImgrelX = getImageRelativeMouseX();
+        	double oldImgrelY = getImageRelativeMouseY();
+        	zoomFactor = zoomFactor - adjustment;
+        	
+        	double newZoomMousePosX = oldImgrelX * getZoomWidth();
+        	double newZoomMousePosY = oldImgrelY * getZoomHeight();
+        	
+        	//This causes the map to center on the picture the mouse was on
+        	x = ((int)newZoomMousePosX) - screenMouseX;
+        	y = ((int)newZoomMousePosY) - screenMouseY;
+        	
+        	updateX();
+        	updateY();	
+    	}
     	else{
     		//Zoom off of 0,0
     	}
