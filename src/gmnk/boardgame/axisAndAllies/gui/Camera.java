@@ -42,7 +42,7 @@ public class Camera {
 	private int screenWidth;
     private int screenHeight;
     private double zoomFactor=0;
-    private double zoomNegativeLimit=-7;
+    private double maxZoomOutFactor; 
 
     public ZOOM_MODE getZoomMode(){
     	return zm;
@@ -51,6 +51,7 @@ public class Camera {
 	public Camera(int imageWidth, int imageHeight){
         this.realImageHeight = imageHeight;
         this.realImageWidth  = imageWidth;
+        maxZoomOutFactor = getMaxZoomFactor();
     }
 	public double getImageRelativeX(){
 		return x/ (getZoomWidth()+0.0);
@@ -70,20 +71,54 @@ public class Camera {
 	public double getCamCenterImageRelativeX(){
 		return getCameraCenterX()/ (getZoomWidth()+0.0);
 	}
-    
+
+	/*
+	Work for calculating what Zoom should be when you are zooming out past the screen:
+	We want getZoomWidth() on the max zoom width to equal the screenWidth 
+	
+	So here is the work:
+	(realImageWidth  * getZoomMultiple(zoomFactor)) == screenWidth 
+	(realImageWidth  * (1 + factor / 10))           == screenWidth 
+	(1 + factor /10 ) ==    (screenWidth / realImageWidth) 
+	(    factor /10 ) ==   ((screenWidth / realImageWidth) -1)
+               factor ==  (((screenWidth / realImageWidth) -1)*10)
+ 
+	 */
+	public double getMaxZoomFactor(){
+		double forWidth = ((((screenWidth +0.0)/ realImageWidth) -1.0) * 10.0);
+		double forHeight = ((((screenHeight +0.0)/ realImageHeight) -1.0) * 10.0);
+		
+		//Remeber we keep the zoom proportions square,
+		//So we have to return the larger one (closer to 0)
+		if(forWidth > forHeight){
+			return forWidth;
+		}else{
+			return forHeight;
+		}
+	}
+	
     public void adjustZoomFactorBy(double adjustment){
-    	if(zoomFactor -adjustment < zoomNegativeLimit){
-    		//zoomFactor = zoomNegativeLimit -1;
-    		//TODO force zoom factor to make 
-    		//getZoomWidth return realImageWidth
+    	boolean useMaxZoomFactor;
+    	
+    	double potentialNewZoomFactor = zoomFactor -adjustment;
+    	
+    	log.debug("Is "+potentialNewZoomFactor+"<="+maxZoomOutFactor);
+    	if( potentialNewZoomFactor<= maxZoomOutFactor){
+    		log.debug("USE MAX ZOOMFACTOR");
+    		useMaxZoomFactor = true;
     	}
-    	
-    	
+    	else{
+    		useMaxZoomFactor = false;
+    	}
     	
     	if(zm == ZOOM_MODE.ON_MAP_CENTER){
         	double oldImgrelX = getCamCenterImageRelativeX();
         	double oldImgrelY = getCamCenterImageRelativeY();    	
-        	zoomFactor = zoomFactor - adjustment;
+        	if(useMaxZoomFactor){
+        		zoomFactor = maxZoomOutFactor;
+        	}else{
+        		zoomFactor = zoomFactor - adjustment;
+        	}
         	x = (int)((getZoomWidth()  * oldImgrelX) -getScreenHalfWidth());
         	y = (int)((getZoomHeight() * oldImgrelY) -getScreenHalfHeight());
         	updateX();
@@ -92,8 +127,11 @@ public class Camera {
     	else if(zm == ZOOM_MODE.PUT_MOUSE_OVER_IN_CENTER){
         	double oldImgrelX = getImageRelativeMouseX();
         	double oldImgrelY = getImageRelativeMouseY();
-        	zoomFactor = zoomFactor - adjustment;
-        	
+        	if(useMaxZoomFactor){
+        		zoomFactor = maxZoomOutFactor;
+        	}else{
+        		zoomFactor = zoomFactor - adjustment;
+        	}
         	double newZoomMousePosX = oldImgrelX * getZoomWidth();
         	double newZoomMousePosY = oldImgrelY * getZoomHeight();
         	
@@ -121,7 +159,11 @@ public class Camera {
             	lastFocalZoomRelativeX = getImageRelativeMouseX();
             	lastFocalZoomRelativeY = getImageRelativeMouseY();
         	}
-        	zoomFactor = zoomFactor - adjustment;
+        	if(useMaxZoomFactor){
+        		zoomFactor = maxZoomOutFactor;
+        	}else{
+        		zoomFactor = zoomFactor - adjustment;
+        	}
         	double newZoomMousePosX = lastFocalZoomRelativeX * getZoomWidth();
         	double newZoomMousePosY = lastFocalZoomRelativeY * getZoomHeight();
         	
@@ -130,17 +172,18 @@ public class Camera {
         	//You first mapped over
         	x = ((int)newZoomMousePosX) - getScreenHalfWidth();
         	y = ((int)newZoomMousePosY) - getScreenHalfHeight() ;
-
-        	
-        	lastZoomTime=System.currentTimeMillis();
-        	
+        	lastZoomTime=System.currentTimeMillis();        	
         	updateX();
         	updateY();	
     	}
     	else if(zm == ZOOM_MODE.ZOOM_TOWARDS_MOUSE){
         	double oldImgrelX = getImageRelativeMouseX();
         	double oldImgrelY = getImageRelativeMouseY();
-        	zoomFactor = zoomFactor - adjustment;
+        	if(useMaxZoomFactor){
+        		zoomFactor = maxZoomOutFactor;
+        	}else{
+        		zoomFactor = zoomFactor - adjustment;
+        	}
         	
         	double newZoomMousePosX = oldImgrelX * getZoomWidth();
         	double newZoomMousePosY = oldImgrelY * getZoomHeight();
@@ -154,6 +197,11 @@ public class Camera {
     	}
     	else{
     		//Zoom off of 0,0
+        	if(useMaxZoomFactor){
+        		zoomFactor = maxZoomOutFactor;
+        	}else{
+        		zoomFactor = zoomFactor - adjustment;
+        	}
     	}
     	
     }
@@ -180,6 +228,7 @@ public class Camera {
 	}
 	public void setScreenWidth(int screenWidth) {
 		this.screenWidth = screenWidth;
+		maxZoomOutFactor = getMaxZoomFactor();
 	}
 
 	public int getScreenHeight() {
@@ -188,6 +237,7 @@ public class Camera {
 
 	public void setScreenHeight(int screenHeight) {
 		this.screenHeight = screenHeight;
+		maxZoomOutFactor = getMaxZoomFactor();
 	}
     
 

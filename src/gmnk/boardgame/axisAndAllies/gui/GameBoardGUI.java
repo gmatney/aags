@@ -189,46 +189,48 @@ public class GameBoardGUI extends JPanel implements ActionListener {
             	DrawUtils.drawString(unitString, territory.getCenter().x + 5, territory.getCenter().y);
         	}
         }
-        int textPos = 5;
+        int textHorzPos = 5;
+        int textVertPos = 5;
         int textMov = 15;
         
         // HUD overlay
         g2d.setColor(Color.white);
         g2d.fillRect(0, 0, 350, 240);
         g2d.setColor(Color.black);
-        g2d.drawString("Camera position: " + cam.getX() + ", " + cam.getY(), 5, (textPos+=textMov));
-        g2d.drawString("Camera Center:   " + cam.getCameraCenterX() + ", " + cam.getCameraCenterY(), 5, (textPos+=textMov));
+        g2d.drawString("Camera position: " + cam.getX() + ", " + cam.getY(), textHorzPos, (textVertPos+=textMov));
+        g2d.drawString("Camera Center:   " + cam.getCameraCenterX() + ", " + cam.getCameraCenterY(), textHorzPos, (textVertPos+=textMov));
         
         g2d.drawString("Cam-Pos Relative:" + String.format("%1$,.6f",cam.getImageRelativeX())
-        		+ ", " + String.format("%1$,.6f",cam.getImageRelativeY()), 5, (textPos+=textMov));
+        		+ ", " + String.format("%1$,.6f",cam.getImageRelativeY()), textHorzPos, (textVertPos+=textMov));
         g2d.drawString("Cam-Center-Rel:  " + String.format("%1$,.6f",cam.getCamCenterImageRelativeX())
-        		+ ", " + String.format("%1$,.6f",cam.getCamCenterImageRelativeY()), 5, (textPos+=textMov));
+        		+ ", " + String.format("%1$,.6f",cam.getCamCenterImageRelativeY()), textHorzPos, (textVertPos+=textMov));
         g2d.drawString("Cam-Mouse-Rel:  " + String.format("%1$,.6f",cam.getImageRelativeMouseX())
-        		+ ", " + String.format("%1$,.6f",cam.getImageRelativeMouseY()), 5, (textPos+=textMov));        
-        g2d.drawString("Mouse position:  " + mousePos.x + ", " + mousePos.y, 5, (textPos+=textMov));
-        g2d.drawString("CamScrnMousePos:  " + cam.getScreenMouseX() + ", " + cam.getScreenMouseY(), 5, (textPos+=textMov));
-        g2d.drawString("CamZoomMousePos:  " + cam.getCurrentZoomMouseX() + ", " + cam.getCurrentZoomMouseY(), 5, (textPos+=textMov));
-        g2d.drawString("Zoom Mode: "      + cam.getZoomMode(), 5, (textPos+=textMov));
-        g2d.drawString("Zoom Factor: "      + cam.getZoomFactor(), 5, (textPos+=textMov));
-        g2d.drawString("Map Dimensions:  " + getMapWidth() + ", " + getMapHeight(),5,(textPos+=textMov));
-        g2d.drawString("Zoom Dimensions: " + cam.getZoomWidth() + ", " + cam.getZoomHeight(),5,(textPos+=textMov));
-        g2d.drawString("Zoom Multiple: " + cam.getZoomMultiple(cam.getZoomFactor()),5,(textPos+=textMov));
-        g2d.drawString("Screen Size:     " + cam.getScreenWidth() + ", " + cam.getScreenHeight(),5,(textPos+=textMov));
+        		+ ", " + String.format("%1$,.6f",cam.getImageRelativeMouseY()), textHorzPos, (textVertPos+=textMov));        
+        g2d.drawString("Mouse position:  " + mousePos.x + ", " + mousePos.y, textHorzPos, (textVertPos+=textMov));
+        g2d.drawString("CamScrnMousePos:  " + cam.getScreenMouseX() + ", " + cam.getScreenMouseY(), textHorzPos, (textVertPos+=textMov));
+        g2d.drawString("CamZoomMousePos:  " + cam.getCurrentZoomMouseX() + ", " + cam.getCurrentZoomMouseY(), textHorzPos, (textVertPos+=textMov));
+        g2d.drawString("Zoom Mode: "      + cam.getZoomMode(), textHorzPos, (textVertPos+=textMov));
+        g2d.drawString("Zoom Factor: "      + cam.getZoomFactor(), textHorzPos, (textVertPos+=textMov));
+        g2d.drawString("MaxZoomOutFactor: "      + cam.getMaxZoomFactor(), textHorzPos, (textVertPos+=textMov));
+        g2d.drawString("Map Dimensions:  " + getMapWidth() + ", " + getMapHeight(),textHorzPos,(textVertPos+=textMov));
+        g2d.drawString("Zoom Dimensions: " + cam.getZoomWidth() + ", " + cam.getZoomHeight(),textHorzPos,(textVertPos+=textMov));
+        g2d.drawString("Zoom Multiple: " + cam.getZoomMultiple(cam.getZoomFactor()),textHorzPos,(textVertPos+=textMov));
+        g2d.drawString("Screen Size:     " + cam.getScreenWidth() + ", " + cam.getScreenHeight(),textHorzPos,(textVertPos+=textMov));
         
         Territory mouseTerritory = world.getTerritoryById(activeTerritory);
         if(mouseTerritory != null) {
             
             g2d.drawString("Active territory: " + activeTerritory + " (" 
-            + world.getTerritoryById(activeTerritory).getName() + ")", 5, textPos+=textMov);
+            + world.getTerritoryById(activeTerritory).getName() + ")", textHorzPos, textVertPos+=textMov);
             
             
         }
-        g2d.drawString("You are in " + gameMode + " mode", 5, (textPos+=textMov));
-        //g2d.drawString("  Press E to enter Edit mode", 5, 95);
-        //g2d.drawString("  Press P to enter Play mode (does nothing currently)", 5, 110);
-        g2d.drawString("  Press N to print a new config to the console", 5, (textPos+=textMov));
-        g2d.drawString("  Click on a territory to define the center", 5, (textPos+=textMov));
-        g2d.drawString("  Click and drag between two territories to toggle neighbors", 5, (textPos+=textMov));
+        g2d.drawString("You are in " + gameMode + " mode", textHorzPos, (textVertPos+=textMov));
+        //g2d.drawString("  Press E to enter Edit mode", textHorzPos, 9textHorzPos);
+        //g2d.drawString("  Press P to enter Play mode (does nothing currently)", textHorzPos, 110);
+        g2d.drawString("  Press N to print a new config to the console", textHorzPos, (textVertPos+=textMov));
+        g2d.drawString("  Click on a territory to define the center", textHorzPos, (textVertPos+=textMov));
+        g2d.drawString("  Click and drag between two territories to toggle neighbors", textHorzPos, (textVertPos+=textMov));
     }
     
     private class KL implements KeyListener
