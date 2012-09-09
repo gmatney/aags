@@ -105,9 +105,7 @@ public class Camera {
     	
     	double potentialNewZoomFactor = zoomFactor -adjustment;
     	
-    	log.debug("Is "+potentialNewZoomFactor+"<="+maxZoomOutFactor);
     	if( potentialNewZoomFactor<= maxZoomOutFactor){
-    		log.debug("USE MAX ZOOMFACTOR");
     		useMaxZoomFactor = true;
     	}
     	else{

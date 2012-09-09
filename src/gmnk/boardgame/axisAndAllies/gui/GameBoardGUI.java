@@ -45,8 +45,8 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 	private static Logger log = Logger.getLogger(GameBoardGUI.class);
     public static final int WORLD_WIDTH = 1000;
     public static final int WORLD_HEIGHT = 700;
-    private boolean enableMapPositionDebugOverlay; 
-
+    private boolean enableMapPositionDebugOverlay = false; 
+    private boolean enableUnitCountToTerritories  = true;
 
 
 
@@ -109,7 +109,7 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 	
 	// Prints the config to the console.
 	public void saveTerritoryConfig() {
-	    for(int i = 0; i < 130; i++) {
+	    for(int i = 1; i < 130; i++) {
 	        if(world.getTerritoryById(i) != null)
 	            log(world.getTerritoryById(i).toConfigString());
 	    }
@@ -122,15 +122,15 @@ public class GameBoardGUI extends JPanel implements ActionListener {
     }
     
     private void updateActiveTerritory() {
-        int mouseX = mousePos.x + cam.getX();
-        int mouseY = mousePos.y + cam.getY();
-        if(mouseX > 0 && mouseX < territoryOverlay.getWidth(null) && mouseY > 0 && mouseY < territoryOverlay.getHeight(null)) {
-            int color = territoryOverlay.getRGB(mouseX, mouseY);
-            int  red   = (color & 0x00ff0000) >> 16;
-            //int  green = (color & 0x0000ff00) >> 8;
-            //int  blue  =  color & 0x000000ff;
-            activeTerritory = red;
-        }
+        int mouseX = (int) (cam.getImageRelativeMouseX() * territoryOverlay.getWidth(null));
+        int mouseY = (int) (cam.getImageRelativeMouseY() * territoryOverlay.getHeight(null));
+    	//TODO fix this        	
+    	int color = territoryOverlay.getRGB(mouseX, mouseY);
+        int  red   = (color & 0x00ff0000) >> 16;
+        //int  green = (color & 0x0000ff00) >> 8;
+        //int  blue  =  color & 0x000000ff;
+        activeTerritory = red;
+
     }
     //TODO add a minimap (could go somewhere like bottom right and be collapsable
     public Image createMiniMapImage(BufferedImage image, int resizeFactor){
@@ -139,6 +139,13 @@ public class GameBoardGUI extends JPanel implements ActionListener {
     			, java.awt.Image.SCALE_SMOOTH);
     	
     }
+    public Territory getActiveTerritory(){
+    	if(activeTerritory == 0){
+    		return null;
+    	}
+    	return world.getTerritoryById(activeTerritory);
+    }
+    
     
     public void paint(Graphics g){
         super.paint(g);
@@ -156,8 +163,6 @@ public class GameBoardGUI extends JPanel implements ActionListener {
         
         DrawUtils.g2d = g2d;
         
-        // Background map image
-        //DrawUtils.drawImage(mapImage, new Point(cam.getScreenHalfWidth()+cam.getX(), cam.getScreenHalfHeight()+cam.getY()));
         DrawUtils.drawImage(mapImage, new Point(0, 0));
         
         
@@ -169,7 +174,7 @@ public class GameBoardGUI extends JPanel implements ActionListener {
         }
         
         // Lines connecting territories that are neighbors
-        Territory t = world.getTerritoryById(activeTerritory);
+        Territory t = getActiveTerritory();
         if(t != null) {
 	    	for(Territory neighbor : t.getNeighbors()) {
 	    		if(neighbor != null && neighbor.getCenter() != null) {
@@ -177,7 +182,17 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 	    		}
 	    	}
         }
+        if(enableUnitCountToTerritories){   addUnitCountToTerritories();}
+        if(enableMapPositionDebugOverlay){  addMapPositionDebugOverlay();}
         
+
+    }
+    public void enableUnitCountToTerritories(boolean enableUnitCountToTerritories){
+    	this.enableUnitCountToTerritories = enableUnitCountToTerritories;
+    }
+    
+    
+    public void addUnitCountToTerritories(){
         // Unit count in territories
         for(Territory territory : world.getTerritories().values()) {
         	HashMap<WorldPowerName, StationedGroup> units = territory.getUnitsStationed();
@@ -196,12 +211,8 @@ public class GameBoardGUI extends JPanel implements ActionListener {
             	DrawUtils.drawString(unitString, territory.getCenter().x + 5, territory.getCenter().y);
         	}
         }
-        if(enableMapPositionDebugOverlay){
-        	addMapPositionDebugOverlay();
-        }
-        
-
     }
+    
     
 	public void enableMapPositionDebugOverlay(boolean enableMapPositionDebugOverlay) {
 		this.enableMapPositionDebugOverlay = enableMapPositionDebugOverlay;
@@ -215,7 +226,7 @@ public class GameBoardGUI extends JPanel implements ActionListener {
         
         // HUD overlay
         g2d.setColor(Color.white);
-        g2d.fillRect(0, 0, 350, 240);
+        g2d.fillRect(0, 0, 350, 340);
         g2d.setColor(Color.black);
         g2d.drawString("Camera position: " + cam.getX() + ", " + cam.getY(), textHorzPos, (textVertPos+=textMov));
         g2d.drawString("Camera Center:   " + cam.getCameraCenterX() + ", " + cam.getCameraCenterY(), textHorzPos, (textVertPos+=textMov));
@@ -237,7 +248,7 @@ public class GameBoardGUI extends JPanel implements ActionListener {
         g2d.drawString("Zoom Multiple: " + cam.getZoomMultiple(cam.getZoomFactor()),textHorzPos,(textVertPos+=textMov));
         g2d.drawString("Screen Size:     " + cam.getScreenWidth() + ", " + cam.getScreenHeight(),textHorzPos,(textVertPos+=textMov));
         
-        Territory mouseTerritory = world.getTerritoryById(activeTerritory);
+        Territory mouseTerritory = getActiveTerritory();
         if(mouseTerritory != null) {
             
             g2d.drawString("Active territory: " + activeTerritory + " (" 
@@ -328,14 +339,7 @@ public class GameBoardGUI extends JPanel implements ActionListener {
         	cam.setScreenMouseY(mousePos.y);
         }
         public void mouseWheelMoved(MouseWheelEvent e) {
-        	//TODO allow zooming in and out on the map.
-        	//TODO not sure if the scaling would take too much processing
-        	//TODO or if we would need to create image maps for a set of scaling levels
-        	//  EXAMPLE 10 different levels one can zoom in, each with their pair of images so no scaling was needed
         	cam.adjustZoomFactorBy( e.getPreciseWheelRotation());
-        	
-        	//cam.setX((int)(cam.getX() * (0.75f + e.getPreciseWheelRotation() / 20)));
-        	//cam.setY((int)(cam.getY() * (0.75f + e.getPreciseWheelRotation() / 20)));
         }
     }
     public int getMapWidth(){

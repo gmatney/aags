@@ -33,10 +33,11 @@ public class DrawUtils {
 	}
 
 	public static void drawLine(int x1, int y1, int x2, int y2) {
-		g2d.drawLine((int) (x1 * (1 + cam.getZoomFactor() / 10) - cam.getX()),
-				(int) (y1 * (1 + cam.getZoomFactor() / 10) - cam.getY()), (int) (x2
-						* (1 + cam.getZoomFactor() / 10) - cam.getX()), (int) (y2
-						* (1 + cam.getZoomFactor() / 10) - cam.getY()));
+		g2d.drawLine(
+				 (int) (x1 * (1 + cam.getZoomFactor() / 10) - cam.getX())
+				,(int) (y1 * (1 + cam.getZoomFactor() / 10) - cam.getY())
+				,(int) (x2 * (1 + cam.getZoomFactor() / 10) - cam.getX())
+				,(int) (y2 * (1 + cam.getZoomFactor() / 10) - cam.getY()));
 	}
 
 	public static void drawString(String string, int x, int y) {

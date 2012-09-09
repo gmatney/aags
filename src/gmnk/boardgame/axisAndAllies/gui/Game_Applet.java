@@ -39,10 +39,17 @@ public class Game_Applet extends JApplet {
     
     public class OptionsPanel extends JPanel implements ActionListener{
     	GameBoardGUI board;
-    	MapPositionDebugOverlayListener mapPositionDebugOverlayListener;
-    	JCheckBox mapPositionDebugOverlayCheckbox;
+ 
+    	//Listeners
     	ZoomStyleSelectorListener zoomStyleSelectorListener;
+    	MapPositionDebugOverlayListener mapPositionDebugOverlayListener;
+    	UnitCountInTerritoriesListener unitCountInTerritoriesListener;
+    	
+    	//Panel Components
     	JComboBox<ZOOM_MODE> zoomStyleOptions;
+    	JCheckBox mapPositionDebugOverlayCheckbox;
+    	JCheckBox unitCountInTerritoriesCheckbox;
+    	
     	public OptionsPanel(GameBoardGUI board){
     		this.board = board;
     		this.setBackground(Color.gray);
@@ -56,6 +63,7 @@ public class Game_Applet extends JApplet {
     		addRandomLargeButton();
     		addZoomStyleSelector();
     		addMapPositionDebugOverlayCheckbox();
+    		addUnitCountInTerritoriesCheckbox();
             this.setMaximumSize(new Dimension(250,99999));
             this.setVisible(true);
     	}
@@ -66,6 +74,9 @@ public class Game_Applet extends JApplet {
             button.setFocusable(false);
             this.add(button);
     	}
+    	
+    	
+    	
     	public class ZoomStyleSelectorListener implements ActionListener{
     		@Override
     		public void actionPerformed(ActionEvent arg0) {
@@ -78,7 +89,12 @@ public class Game_Applet extends JApplet {
 				board.enableMapPositionDebugOverlay(mapPositionDebugOverlayCheckbox.isSelected());
 			}
     	}
-    	
+    	public class UnitCountInTerritoriesListener implements ActionListener{
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				board.enableUnitCountToTerritories(unitCountInTerritoriesCheckbox.isSelected());
+			}
+    	}    	
     	
     	
     	
@@ -87,8 +103,7 @@ public class Game_Applet extends JApplet {
 			log.debug(event);
 			log.debug("ActionCommand="+event.getActionCommand());
 			board.actionPerformed(event);
-		}
-		
+		}		
 	    public void addZoomStyleSelector(){
 	    	zoomStyleOptions = new JComboBox<ZOOM_MODE>(ZOOM_MODE.values());
 	    	zoomStyleOptions.setFocusable(false);
@@ -106,6 +121,15 @@ public class Game_Applet extends JApplet {
 	    	mapPositionDebugOverlayCheckbox.setMaximumSize(new Dimension(250,20));
 	    	this.add(mapPositionDebugOverlayCheckbox);
 	    }
+		public void addUnitCountInTerritoriesCheckbox(){
+			unitCountInTerritoriesCheckbox = new JCheckBox("UnitCountInTerritories");
+	    	unitCountInTerritoriesCheckbox.setFocusable(false);
+	    	unitCountInTerritoriesListener = new UnitCountInTerritoriesListener();
+	    	unitCountInTerritoriesCheckbox.addActionListener(unitCountInTerritoriesListener);
+	    	unitCountInTerritoriesCheckbox.setMaximumSize(new Dimension(250,20));
+	    	unitCountInTerritoriesCheckbox.setSelected(true);
+	    	this.add(unitCountInTerritoriesCheckbox);
+		}
     	
     }
     
