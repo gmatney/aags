@@ -47,6 +47,9 @@ public class Camera {
     public ZOOM_MODE getZoomMode(){
     	return zm;
     }
+    public void setZoomMode(ZOOM_MODE zoomMode){
+    	zm = zoomMode;
+    }
 
 	public Camera(int imageWidth, int imageHeight){
         this.realImageHeight = imageHeight;

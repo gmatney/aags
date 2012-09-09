@@ -45,8 +45,12 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 	private static Logger log = Logger.getLogger(GameBoardGUI.class);
     public static final int WORLD_WIDTH = 1000;
     public static final int WORLD_HEIGHT = 700;
+    private boolean enableMapPositionDebugOverlay; 
 
-    private Graphics2D g2d;
+
+
+
+	private Graphics2D g2d;
     private Timer time;
     private Camera cam;
     
@@ -67,9 +71,10 @@ public class GameBoardGUI extends JPanel implements ActionListener {
         addMouseListener(newMouseListener);
         addMouseMotionListener(newMouseListener);
         addMouseWheelListener(newMouseListener);
-        
         setFocusable(true);
         gameController = new GameController();
+        
+        
         try {
             gameController.initializeGame();
             world = gameController.getWorld();
@@ -97,6 +102,10 @@ public class GameBoardGUI extends JPanel implements ActionListener {
         time = new Timer(5, this);
         time.start();
 	}
+	public Camera getCamera(){
+		return cam;
+	}
+	
 	
 	// Prints the config to the console.
 	public void saveTerritoryConfig() {
@@ -106,8 +115,7 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 	    }
 	}
 	
-    public void actionPerformed(ActionEvent e)
-    {
+    public void actionPerformed(ActionEvent e){
         cam.update();
         updateActiveTerritory();
         repaint();
@@ -132,8 +140,7 @@ public class GameBoardGUI extends JPanel implements ActionListener {
     	
     }
     
-    public void paint(Graphics g)
-    {
+    public void paint(Graphics g){
         super.paint(g);
         g2d = (Graphics2D) g;
         g2d.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING,
@@ -189,6 +196,19 @@ public class GameBoardGUI extends JPanel implements ActionListener {
             	DrawUtils.drawString(unitString, territory.getCenter().x + 5, territory.getCenter().y);
         	}
         }
+        if(enableMapPositionDebugOverlay){
+        	addMapPositionDebugOverlay();
+        }
+        
+
+    }
+    
+	public void enableMapPositionDebugOverlay(boolean enableMapPositionDebugOverlay) {
+		this.enableMapPositionDebugOverlay = enableMapPositionDebugOverlay;
+	}
+    
+    
+    private void addMapPositionDebugOverlay(){
         int textHorzPos = 5;
         int textVertPos = 5;
         int textMov = 15;
@@ -233,8 +253,8 @@ public class GameBoardGUI extends JPanel implements ActionListener {
         g2d.drawString("  Click and drag between two territories to toggle neighbors", textHorzPos, (textVertPos+=textMov));
     }
     
-    private class KL implements KeyListener
-    {
+    
+    private class KL implements KeyListener{
         public void keyPressed(KeyEvent e) {
             cam.keyPressed(e);
         }

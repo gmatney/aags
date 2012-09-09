@@ -19,6 +19,7 @@ public class CONSTANTS {
 		}
 		return baseWorkingDir;
 	}
+	public static final String ETC_PATH  = getBaseWorkingDir()+"etc/";
     public static final String RESOURCE_PATH = getBaseWorkingDir()+"src/gmnk/boardgame/axisAndAllies/gui/resources/";
     public static final String TERRITORY_CONFIG = "Territory_Config";
     

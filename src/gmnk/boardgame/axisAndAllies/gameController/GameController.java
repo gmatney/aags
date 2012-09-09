@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonStreamParser;
 
+import gmnk.boardgame.axisAndAllies.CONSTANTS;
 import gmnk.boardgame.axisAndAllies.territory.World;
 import gmnk.boardgame.axisAndAllies.worldPowers.Players;
 import gmnk.boardgame.axisAndAllies.worldPowers.WorldPowerJsonDeserializer;
@@ -27,7 +28,8 @@ public class GameController {
 		w = new World();
 		log.info("Creating world");
 		File testFile = new File(".");
-		File configFile = new File("../etc/1942SpringStartingConfig.json");
+		
+		File configFile = new File( CONSTANTS.ETC_PATH+"1942SpringStartingConfig.json");
 		Reader configReader = new FileReader(configFile);
 		log.info("Trying to using gson");
 		
