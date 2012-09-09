@@ -80,23 +80,23 @@ public class EnumInterpreter {
 		s=s.trim().toUpperCase();
 		s=s.replaceAll(" ", "");
 		
-//		switch(s){
-//			case "INFANTRY"            : return UnitName.INFANTRY;
-//			case "ARTILLERY"           : return UnitName.ARTILLERY;
-//			case "TANK"                : return UnitName.TANK;
-//			case "FIGHTER"             : return UnitName.FIGHTER;
-//			case "BOMBER"              : return UnitName.BOMBER;
-//			case "SUBMARINE"           : return UnitName.SUBMARINE;
-//			case "TRANSPORT"           : return UnitName.TRANSPORT;
-//			case "DESTROYER"           : return UnitName.DESTROYER;
-//			case "CRUISER"             : return UnitName.CRUISER;
-//			case "AIRCRAFT_CARRIER"    : return UnitName.AIRCRAFT_CARRIER;
-//			case "BATTLESHIP"          : return UnitName.BATTLESHIP;
-//			case "ANTIAIRCRAFTGUN"     : return UnitName.ANTIAIRCRAFTGUN;
-//			case "AAGUN"               : return UnitName.ANTIAIRCRAFTGUN;
-//			case "FACTORY"             : return UnitName.FACTORY;
-//			case "INDUSTRIAL_COMPLEX"  : return UnitName.FACTORY;
-//		}
+		switch(s){
+			case "INFANTRY"            : return UnitName.INFANTRY;
+			case "ARTILLERY"           : return UnitName.ARTILLERY;
+			case "TANK"                : return UnitName.TANK;
+			case "FIGHTER"             : return UnitName.FIGHTER;
+			case "BOMBER"              : return UnitName.BOMBER;
+			case "SUBMARINE"           : return UnitName.SUBMARINE;
+			case "TRANSPORT"           : return UnitName.TRANSPORT;
+			case "DESTROYER"           : return UnitName.DESTROYER;
+			case "CRUISER"             : return UnitName.CRUISER;
+			case "AIRCRAFT_CARRIER"    : return UnitName.AIRCRAFT_CARRIER;
+			case "BATTLESHIP"          : return UnitName.BATTLESHIP;
+			case "ANTIAIRCRAFTGUN"     : return UnitName.ANTIAIRCRAFTGUN;
+			case "AAGUN"               : return UnitName.ANTIAIRCRAFTGUN;
+			case "FACTORY"             : return UnitName.FACTORY;
+			case "INDUSTRIAL_COMPLEX"  : return UnitName.FACTORY;
+		}
 		
 		
 		
