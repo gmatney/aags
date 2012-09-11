@@ -8,6 +8,7 @@ import gmnk.boardgame.axisAndAllies.units.types.SeaUnit;
 import gmnk.boardgame.axisAndAllies.units.types.UnitProfile;
 import gmnk.boardgame.axisAndAllies.worldPowers.WorldPowerName;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
@@ -17,10 +18,10 @@ public class StationedGroup {
 	private static Logger log = Logger.getLogger(StationedGroup.class);
 	private WorldPowerName worldPowerAllegence;
 	private LinkedHashMap<UnitName,Integer> units     = new LinkedHashMap<UnitName,Integer>();
-	private HashMap<UnitName,UnitGroup> landUnits     = new HashMap<UnitName,UnitGroup>();
-	private HashMap<UnitName,UnitGroup> airUnits      = new HashMap<UnitName,UnitGroup>();
-	private HashMap<UnitName,UnitGroup> seaUnits      = new HashMap<UnitName,UnitGroup>();
-	private HashMap<UnitName,UnitGroup> antiAirGuns   = new HashMap<UnitName,UnitGroup>();
+	private ArrayList<UnitConcrete> landUnits     = new ArrayList<UnitConcrete>();
+	private ArrayList<UnitConcrete> airUnits      = new ArrayList<UnitConcrete>();
+	private ArrayList<UnitConcrete> seaUnits      = new ArrayList<UnitConcrete>();
+	private ArrayList<UnitConcrete> antiAirGuns   = new ArrayList<UnitConcrete>();
 	private Territory station;
 	
 	
@@ -34,37 +35,17 @@ public class StationedGroup {
 		UnitProfile unit = EnumInterpreter.getUnitProfile(name);
 		
 		if(name.equals(UnitName.ANTIAIRCRAFTGUN)){
-			if(antiAirGuns.containsKey(name)){
-				UnitGroup old = antiAirGuns.remove(name);
-				antiAirGuns.put(name,new UnitGroup(name, quantity+old.getRemainingQuantity(), station));
-			}else{
-				antiAirGuns.put(name,new UnitGroup(name, quantity, station));
-			}
+			antiAirGuns.add(new UnitConcrete(name, station));
 		}
 		
 		else if(unit instanceof LandUnit){
-			if(landUnits.containsKey(name)){
-				UnitGroup old = landUnits.remove(name);
-				landUnits.put(name,new UnitGroup(name, quantity+old.getRemainingQuantity(), station));
-			}else{
-				landUnits.put(name,new UnitGroup(name, quantity, station));
-			}
+			landUnits.add(new UnitConcrete(name, station));
 		}
 		else if(unit instanceof AirUnit){
-			if(airUnits.containsKey(name)){
-				UnitGroup old = airUnits.remove(name);
-				airUnits.put(name,new UnitGroup(name, quantity+old.getRemainingQuantity(), station));
-			}else{
-				airUnits.put(name,new UnitGroup(name, quantity, station));
-			}
+			airUnits.add(new UnitConcrete(name, station));
 		}
 		else if(unit instanceof SeaUnit){
-			if(seaUnits.containsKey(name)){
-				UnitGroup old = seaUnits.remove(name);
-				seaUnits.put(name,new UnitGroup(name, quantity+old.getRemainingQuantity(), station));
-			}else{
-				seaUnits.put(name,new UnitGroup(name, quantity, station));
-			}
+			seaUnits.add(new UnitConcrete(name, station));
 		}
 		else{
 			//TODO AAGUN
@@ -88,10 +69,10 @@ public class StationedGroup {
 		if(units==null){
 			log.warn("Trying to set unitsStationed to NULL, using empty instead");
 			units = new LinkedHashMap<UnitName,Integer>();
-			landUnits   = new HashMap<UnitName,UnitGroup>();
-			airUnits    = new HashMap<UnitName,UnitGroup>();
-			seaUnits    = new HashMap<UnitName,UnitGroup>();
-			antiAirGuns = new HashMap<UnitName,UnitGroup>();
+			landUnits   = new ArrayList<UnitConcrete>();
+			airUnits    = new ArrayList<UnitConcrete>();
+			seaUnits    = new ArrayList<UnitConcrete>();
+			antiAirGuns = new ArrayList<UnitConcrete>();
 			
 		}
 		else{
@@ -129,19 +110,19 @@ public class StationedGroup {
 		return units;
 	}
 
-	public HashMap<UnitName, UnitGroup> getLandUnits() {
+	public ArrayList<UnitConcrete> getLandUnits() {
 		return landUnits;
 	}
 
-	public HashMap<UnitName, UnitGroup> getAirUnits() {
+	public ArrayList<UnitConcrete> getAirUnits() {
 		return airUnits;
 	}
 
-	public HashMap<UnitName, UnitGroup> getSeaUnits() {
+	public ArrayList<UnitConcrete> getSeaUnits() {
 		return seaUnits;
 	}
 
-	public HashMap<UnitName, UnitGroup> getAntiAirGuns() {
+	public ArrayList<UnitConcrete> getAntiAirGuns() {
 		return antiAirGuns;
 	}
 

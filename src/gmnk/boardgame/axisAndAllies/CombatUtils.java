@@ -4,6 +4,7 @@ import gmnk.boardgame.axisAndAllies.territory.SeaTerritory;
 import gmnk.boardgame.axisAndAllies.territory.Territory;
 import gmnk.boardgame.axisAndAllies.units.BattleGroup;
 import gmnk.boardgame.axisAndAllies.units.StationedGroup;
+import gmnk.boardgame.axisAndAllies.units.UnitConcrete;
 import gmnk.boardgame.axisAndAllies.units.UnitGroup;
 import gmnk.boardgame.axisAndAllies.units.UnitName;
 import gmnk.boardgame.axisAndAllies.units.types.UnitProfile;
@@ -22,8 +23,12 @@ public class CombatUtils {
 
     //TODO write event handlers to send for instructions (death after
     public CasualtyReport runCombat(BattleGroup attackingUnits, StationedGroup defendingUnits) {
-        int defendingCasualties = 0;
-        int attackingCasualties = 0;
+        int defendingGeneralCasualties = 0;
+        int defendingAirCasualties = 0;
+        int defendingSeaCasualties = 0;
+        int attackingGeneralCasualties = 0;
+        int attackingAirCasualties = 0;
+        int attackingSeaCasualties = 0;
         
         //TODO: Special combat (submarines, bombardments, etc)
         // Phase 2: general combat.
@@ -34,42 +39,46 @@ public class CombatUtils {
     		//NAVAL WARFARE
     	}
     	else{ //LAND WARFARE
-    		//TODO add Bombardments 
+    		// TODO: detect if naval battle has occurred, if so then no bombardments are possible.
+    		int numBombardments = attackingUnits.getNumTransportedUnits();
+    		ArrayList<UnitConcrete> bombardUnits = attackingUnits.getBombardUnits(numBombardments);
+    		for(int i = 0; i < numBombardments; i++) {
+    			if(rollDie() <= bombardUnits.get(i).getProfile().getAttack()) {
+    				defendingGeneralCasualties++;
+    			}
+    		}
 
     		//TODO add AAGUN support 
     		
     		//ATTACKER
-    		defendingCasualties =+ getHitsCausedByStandardAttackingGroup(attackingUnits.getLandUnits());
-    		defendingCasualties =+ getHitsCausedByStandardAttackingGroup(attackingUnits.getAirUnits());
-            
-            //DEFENDER
-    		attackingCasualties =+ getHitsCausedByStandardDefendingGroup(defendingUnits.getLandUnits());
-    		attackingCasualties =+ getHitsCausedByStandardDefendingGroup(defendingUnits.getAirUnits());
+	    	defendingGeneralCasualties =+ getHitsCausedByStandardAttackingGroup(attackingUnits.getLandUnits());
+	    	defendingGeneralCasualties =+ getHitsCausedByStandardAttackingGroup(attackingUnits.getAirUnits());
+	            
+	        //DEFENDER
+	    	attackingGeneralCasualties =+ getHitsCausedByStandardDefendingGroup(defendingUnits.getLandUnits());
+	    	attackingGeneralCasualties =+ getHitsCausedByStandardDefendingGroup(defendingUnits.getAirUnits());
     	}
-        CasualtyReport casualties = new CasualtyReport(attackingCasualties,defendingCasualties);
+        CasualtyReport casualties = new CasualtyReport(attackingGeneralCasualties, defendingGeneralCasualties,
+        		attackingAirCasualties, defendingAirCasualties, attackingSeaCasualties, defendingSeaCasualties);
         return casualties;
     }
-    public int getHitsCausedByStandardAttackingGroup(ArrayList<UnitGroup>  attackers){
+    public int getHitsCausedByStandardAttackingGroup(ArrayList<UnitConcrete> attackers){
         int hits = 0;
-    	for(UnitGroup unit : attackers) {
+    	for(UnitConcrete unit : attackers) {
     		//TODO add check to make sure all units are standard
-        	for(int i=0; i< unit.getRemainingQuantity(); i++){
-        		if(rollDie() <= unit.getProfile().getAttack()){
-        			hits++;
-        		}
+        	if(rollDie() <= unit.getProfile().getAttack()){
+        		hits++;
         	}
         }
     	return hits;
     }
     
-    public int getHitsCausedByStandardDefendingGroup(HashMap<UnitName, UnitGroup> defenders){
+    public int getHitsCausedByStandardDefendingGroup(ArrayList<UnitConcrete> defenders){
     	int hits = 0;
-    	for(UnitGroup unit : defenders.values()) {
+    	for(UnitConcrete unit : defenders) {
     		//TODO add check to make sure all units are standard
-        	for(int i=0; i< unit.getRemainingQuantity(); i++){
-        		if(rollDie() <= unit.getProfile().getAttack()){
-        			hits++;
-        		}
+        	if(rollDie() <= unit.getProfile().getAttack()){
+        		hits++;
         	}
         }    	
     	return hits;
