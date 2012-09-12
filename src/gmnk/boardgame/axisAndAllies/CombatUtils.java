@@ -34,9 +34,10 @@ public class CombatUtils {
         // Phase 2: general combat.
     	
     	
+        //Need to get the attack path. And whether defending units are in attack path
     	Territory t = attackingUnits.getTargetTerritory();
     	if(t instanceof SeaTerritory){
-    		//NAVAL WARFARE
+    		ArrayList<UnitConcrete> seaUnits = attackingUnits.getSeaAttackUnits();
     	}
     	else{ //LAND WARFARE
     		// TODO: detect if naval battle has occurred, if so then no bombardments are possible.
@@ -77,7 +78,7 @@ public class CombatUtils {
     	int hits = 0;
     	for(UnitConcrete unit : defenders) {
     		//TODO add check to make sure all units are standard
-        	if(rollDie() <= unit.getProfile().getAttack()){
+        	if(rollDie() <= unit.getProfile().getDefense()){
         		hits++;
         	}
         }    	

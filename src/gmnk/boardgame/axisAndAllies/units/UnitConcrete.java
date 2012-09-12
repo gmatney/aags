@@ -12,10 +12,12 @@ public class UnitConcrete {
 
 	private UnitProfile profile;
 	private Territory territorySource;
-	
+	private int remainingHitpoints;
+
 	public UnitConcrete(UnitName type, Territory territorySource){
 		this.territorySource = territorySource;
 		profile = EnumInterpreter.getUnitProfile(type);
+		
 	}
 	
 	public UnitName getType() {
@@ -28,4 +30,24 @@ public class UnitConcrete {
 	public Territory getTerritorySource(){
 		return territorySource;
 	}
+	public int getRemainingHitpoints() {
+		return remainingHitpoints;
+	}
+
+	/**
+ 	In current rules only will be used for battleship 
+	 **/
+	public void resetRemainingHitpoints() {
+		if(isDead()){
+			log.debug("no more health for the dead");
+		}{
+			remainingHitpoints = profile.getHitpoints();
+		}
+	}
+	public boolean isDead(){
+		return remainingHitpoints<=0;
+	}
+	
+	
+	
 }

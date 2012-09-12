@@ -1,6 +1,7 @@
 package gmnk.boardgame.axisAndAllies.units;
 
 import gmnk.boardgame.axisAndAllies.territory.Territory;
+import gmnk.boardgame.axisAndAllies.units.sea.Transport;
 import gmnk.boardgame.axisAndAllies.units.types.AirUnit;
 import gmnk.boardgame.axisAndAllies.units.types.LandUnit;
 import gmnk.boardgame.axisAndAllies.units.types.SeaUnit;
@@ -56,10 +57,19 @@ public class BattleGroup {
 		}
 		return airUnits;
 	}
-	public ArrayList<UnitConcrete> getSeaUnits() {
+	/**
+	 * 
+	 * Will return all SeaUnits except Transports, this is to prevent
+	 * other attacking utils from using transports to take hits during
+	 * the fight.  (even though all the transports will die if their
+	 * side loses)
+	 */
+	public ArrayList<UnitConcrete> getSeaAttackUnits() {
 		ArrayList<UnitConcrete> seaUnits = new ArrayList<UnitConcrete>();
 		for(UnitConcrete unit : units) {
-			if(unit.getProfile() instanceof SeaUnit) {
+			if(unit.getProfile() instanceof SeaUnit
+				&& (!(unit.getProfile() instanceof Transport))
+			) {
 				seaUnits.add(unit);
 			}
 		}
