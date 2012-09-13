@@ -6,11 +6,10 @@ import gmnk.boardgame.axisAndAllies.territory.Territory;
 import gmnk.boardgame.axisAndAllies.territory.World;
 import gmnk.boardgame.axisAndAllies.units.StationedGroup;
 import gmnk.boardgame.axisAndAllies.units.UnitName;
-import gmnk.boardgame.axisAndAllies.units.UnitUtils;
 import gmnk.boardgame.axisAndAllies.worldPowers.WorldPowerName;
-import gmnk.boardgame.axisAndAllies.worldPowers.WorldPowers;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -26,11 +25,12 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
@@ -53,6 +53,8 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 	private Graphics2D g2d;
     private Timer time;
     private Camera cam;
+    private Font font;
+    private Font defaultFont;
     
     private BufferedImage mapImage;
     private BufferedImage territoryOverlay;
@@ -73,7 +75,20 @@ public class GameBoardGUI extends JPanel implements ActionListener {
         addMouseWheelListener(newMouseListener);
         setFocusable(true);
         gameController = new GameController();
+        InputStream myStream;
         
+        // Initialize fonts.
+        defaultFont = new Font("serif", Font.PLAIN, 16);
+		try {
+			myStream = new BufferedInputStream(new FileInputStream(CONSTANTS.RESOURCE_PATH + "POTTERYB.TTF"));
+	        Font ttfBase = Font.createFont(Font.TRUETYPE_FONT, myStream);
+	        font = ttfBase.deriveFont(Font.PLAIN, 40);
+		} catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Font not loaded.  Using standard serif font.");
+            font = new Font("serif", Font.PLAIN, 40);
+		}
+
         
         try {
             gameController.initializeGame();
@@ -118,6 +133,10 @@ public class GameBoardGUI extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e){
         cam.update();
         updateActiveTerritory();
+        
+        if(gameMode.equals("Play"))
+        	gameController.update();
+        	
         repaint();
     }
     
@@ -185,7 +204,12 @@ public class GameBoardGUI extends JPanel implements ActionListener {
         if(enableUnitCountToTerritories){   addUnitCountToTerritories();}
         if(enableMapPositionDebugOverlay){  addMapPositionDebugOverlay();}
         
-
+        if(gameMode.equals("Play")) {
+        	g2d.setFont(font);
+        	g2d.drawString(gameController.activePower.toString(), getWidth() / 2 - 50, 40);
+        	g2d.setFont(defaultFont);
+        	g2d.drawString(gameController.gamePhase.toString(), getWidth() / 2 - 50, 60);
+        }
     }
     public void enableUnitCountToTerritories(boolean enableUnitCountToTerritories){
     	this.enableUnitCountToTerritories = enableUnitCountToTerritories;
@@ -278,6 +302,11 @@ public class GameBoardGUI extends JPanel implements ActionListener {
         	else if(e.getKeyCode() == KeyEvent.VK_P)
             {
                 gameMode = "Play";
+                try {
+					gameController.initializeGame();
+				} catch (FileNotFoundException e1) {
+					e1.printStackTrace();
+				}
             }
         	else if(e.getKeyCode() == KeyEvent.VK_N)
         	{
