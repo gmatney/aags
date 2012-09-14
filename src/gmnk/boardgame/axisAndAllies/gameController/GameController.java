@@ -34,7 +34,8 @@ public class GameController {
 	public GamePhase gamePhase;
 	private LinkedList<GamePhase> gamePhaseOrder;
 	private LinkedList<WorldPowerName> worldPowerOrder;
-	private final int TURN_LENGTH = 1000; // Time per game stage (in ms);
+	private final int TURN_LENGTH = 1000000; // Time per game stage (in ms);
+	private boolean volunteerEndPhase; // This flag can be set by the client if they wish to end the current phase before the timer runs out.
 	
 	public void initializeGame() throws FileNotFoundException{
 		log.info("Initalizing the Game");
@@ -109,7 +110,14 @@ public class GameController {
 	}
 	
 	public boolean isTurnOver() {
-		return phaseStartTime < (System.currentTimeMillis() - TURN_LENGTH); 
+		if(phaseStartTime < (System.currentTimeMillis() - TURN_LENGTH) || volunteerEndPhase) {
+			volunteerEndPhase = false;
+			return true;
+		}
+		return false;
+	}
+	public void volunteerEndPhase() {
+		volunteerEndPhase = true;
 	}
 	public GamePhase getNextGamePhase(GamePhase currentPhase) {
 		int nextPhaseIndex = gamePhaseOrder.indexOf(currentPhase) + 1;

@@ -86,6 +86,10 @@ public class Territory {
  		}
  	}
  	
+ 	public void removeAllUnitsStationed() {
+ 		unitsStationed = new HashMap<WorldPowerName,StationedGroup>();
+ 	}
+ 	
  	public void addUnitsStationed(StationedGroup units){
  		if(units==null){
  			log.warn("Trying to add NULL StationedGroup");
@@ -102,8 +106,6 @@ public class Territory {
  		}else{
  			unitsStationed.put(units.getWorldPowerAllegence(), units);
  		}
- 		
- 		
  	}
  	
  	public void setUnitsStationed(HashMap<WorldPowerName, StationedGroup> unitsStationed){

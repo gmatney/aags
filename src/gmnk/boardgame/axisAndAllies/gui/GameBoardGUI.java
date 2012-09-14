@@ -321,15 +321,10 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 
 		Territory mouseTerritory = getActiveTerritory();
 		if(mouseTerritory != null) {
-
 			g2d.drawString("Active territory: " + activeTerritory + " (" 
 					+ world.getTerritoryById(activeTerritory).getName() + ")", textHorzPos, textVertPos+=textMov);
-
-
 		}
 		g2d.drawString("You are in " + gameMode + " mode", textHorzPos, (textVertPos+=textMov));
-		//g2d.drawString("  Press E to enter Edit mode", textHorzPos, 9textHorzPos);
-		//g2d.drawString("  Press P to enter Play mode (does nothing currently)", textHorzPos, 110);
 		g2d.drawString("  Press N to print a new config to the console", textHorzPos, (textVertPos+=textMov));
 		g2d.drawString("  Click on a territory to define the center", textHorzPos, (textVertPos+=textMov));
 		g2d.drawString("  Click and drag between two territories to toggle neighbors", textHorzPos, (textVertPos+=textMov));
@@ -342,12 +337,12 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 		}
 		public void keyReleased(KeyEvent e) {
 			cam.keyReleased(e);
-			if(e.getKeyCode() == KeyEvent.VK_E)
-			{
+			
+			// Keybindings independent of gameMode:
+			if(e.getKeyCode() == KeyEvent.VK_E)	{
 				gameMode = "Edit";
 			}
-			else if(e.getKeyCode() == KeyEvent.VK_P)
-			{
+			else if(e.getKeyCode() == KeyEvent.VK_P) {
 				gameMode = "Play";
 				try {
 					gameController.initializeGame();
@@ -355,9 +350,18 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 					e1.printStackTrace();
 				}
 			}
-			else if(e.getKeyCode() == KeyEvent.VK_N)
-			{
-				saveTerritoryConfig();
+			
+			// Edit mode keybindings:
+			if(gameMode.equals("Edit"))	{
+				if(e.getKeyCode() == KeyEvent.VK_N)	{
+					saveTerritoryConfig();
+				}
+			}
+			// Play mode keybindings:
+			else if(gameMode.equals("Play")) {
+				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+					gameController.volunteerEndPhase();
+				}
 			}
 		}
 		public void keyTyped(KeyEvent e) {  
@@ -372,21 +376,21 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 			if(gameMode.equals("Edit")) {
 				Territory clickedTerritory = world.getTerritoryById(activeTerritory);
 				if(clickedTerritory != null) {
-					clickedTerritory.setCenter(new Point(mouseX, mouseY));
+					clickedTerritory.setCenter(new Point(mousePos.x, mousePos.y));
 				}
 			}
 		}
 		public void mousePressed( MouseEvent e ) {
-			if(gameMode.equals("Edit")) {
-				mouseStartDrag = world.getTerritoryById(activeTerritory);
-			}
+			mouseStartDrag = world.getTerritoryById(activeTerritory);
 		}
 		public void mouseReleased( MouseEvent e ) { 
+			Territory endTerritory = world.getTerritoryById(activeTerritory); 
+			if(endTerritory == mouseStartDrag) {
+				mouseClicked(e);
+				return;
+			}
 			if(gameMode.equals("Edit")) {
-				Territory endTerritory = world.getTerritoryById(activeTerritory); 
-				if(endTerritory == mouseStartDrag)
-					mouseClicked(e);
-				else if(endTerritory != null && mouseStartDrag != null) {
+				if(endTerritory != null && mouseStartDrag != null) {
 					if(endTerritory.getNeighbors().contains(mouseStartDrag)) {
 						endTerritory.removeNeighbor(mouseStartDrag);
 						mouseStartDrag.removeNeighbor(endTerritory);
@@ -394,6 +398,18 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 					else {
 						endTerritory.addNeighbor(mouseStartDrag);
 						mouseStartDrag.addNeighbor(endTerritory);
+					}
+				}
+			}
+			/* TODO: most of this logic should probably be in gameController, the gui should send a 
+			 * "request to move units" for example, and the gameController can return a response with 
+			 * success/failure and reason.
+			 */
+			else if(gameMode.equals("Play")) {
+				if(endTerritory != null && mouseStartDrag != null) {
+					if(endTerritory.getNeighbors().contains(mouseStartDrag)) {
+						endTerritory.addUnitsStationed(mouseStartDrag.getUnitsStationed(gameController.activePower));
+						mouseStartDrag.removeAllUnitsStationed();
 					}
 				}
 			}

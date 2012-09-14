@@ -17,7 +17,7 @@ public class UnitUtils {
 			return new StationedGroup(t, WorldPowerName.UNKNOWN);
 		}
 		HashMap<UnitName,Integer> au = a.getStationedUnits();
-		HashMap<UnitName,Integer> bu = a.getStationedUnits();
+		HashMap<UnitName,Integer> bu = b.getStationedUnits();
 		StationedGroup n = new StationedGroup(t,a.getWorldPowerAllegence()); 
 		for(UnitName key: au.keySet()){
 			n.addUnit(key, au.get(key));
