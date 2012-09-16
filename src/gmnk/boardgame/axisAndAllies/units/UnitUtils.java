@@ -1,6 +1,7 @@
 package gmnk.boardgame.axisAndAllies.units;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import gmnk.boardgame.axisAndAllies.territory.Territory;
@@ -16,14 +17,14 @@ public class UnitUtils {
 			log.error("Forces from different groups trying to merge, they all die. Returning empty WorldPower");
 			return new StationedGroup(t, WorldPowerName.UNKNOWN);
 		}
-		HashMap<UnitName,Integer> au = a.getStationedUnits();
-		HashMap<UnitName,Integer> bu = b.getStationedUnits();
+		ArrayList<UnitConcrete> au = a.getStationedUnits();
+		ArrayList<UnitConcrete> bu = b.getStationedUnits();
 		StationedGroup n = new StationedGroup(t,a.getWorldPowerAllegence()); 
-		for(UnitName key: au.keySet()){
-			n.addUnit(key, au.get(key));
+		for(UnitConcrete unit : au){
+			n.addUnit(unit);
 		}
-		for(UnitName key: bu.keySet()){
-			n.addUnit(key, bu.get(key));
+		for(UnitConcrete unit : bu){
+			n.addUnit(unit);
 		}		
 		return n;
 		

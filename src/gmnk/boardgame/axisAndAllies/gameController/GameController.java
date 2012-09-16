@@ -2,11 +2,13 @@ package gmnk.boardgame.axisAndAllies.gameController;
 
 import gmnk.boardgame.axisAndAllies.CONSTANTS;
 import gmnk.boardgame.axisAndAllies.GamePhase;
+import gmnk.boardgame.axisAndAllies.PurchaseOrder;
 import gmnk.boardgame.axisAndAllies.territory.Territory;
 import gmnk.boardgame.axisAndAllies.territory.World;
 import gmnk.boardgame.axisAndAllies.units.UnitConcrete;
 import gmnk.boardgame.axisAndAllies.units.types.LandUnit;
 import gmnk.boardgame.axisAndAllies.worldPowers.Players;
+import gmnk.boardgame.axisAndAllies.worldPowers.WorldPower;
 import gmnk.boardgame.axisAndAllies.worldPowers.WorldPowerJsonDeserializer;
 import gmnk.boardgame.axisAndAllies.worldPowers.WorldPowerName;
 import gmnk.boardgame.axisAndAllies.worldPowers.WorldPowers;
@@ -30,10 +32,14 @@ public class GameController {
 	private WorldPowerJsonDeserializer wpDeser = new WorldPowerJsonDeserializer();
 	private WorldPowers wp = new WorldPowers();
 	private long phaseStartTime;
+	
 	public WorldPowerName activePower;
 	public GamePhase gamePhase;
-	private LinkedList<GamePhase> gamePhaseOrder;
 	private LinkedList<WorldPowerName> worldPowerOrder;
+	private LinkedList<GamePhase> gamePhaseOrder;
+	
+	private PurchaseOrder currentPurchaseOrder;
+	
 	private final int TURN_LENGTH = 1000000; // Time per game stage (in ms);
 	private boolean volunteerEndPhase; // This flag can be set by the client if they wish to end the current phase before the timer runs out.
 	
@@ -87,8 +93,16 @@ public class GameController {
 	public void update() {
 		if(isTurnOver()) {
 			gamePhase = getNextGamePhase(gamePhase);
-			if(gamePhase == GamePhase.PURCHASE_UNITS)
-				activePower = getNextWorldPower(activePower);
+			switch(gamePhase) {
+				case PURCHASE_UNITS:
+					activePower = getNextWorldPower(activePower);
+					currentPurchaseOrder = null;
+				case COMBAT_MOVEMENT:
+				case COMBAT:
+				case NONCOMBAT_MOVEMENT:
+				case PLACE_UNITS:
+			}
+
 			phaseStartTime = System.currentTimeMillis();
 		}
 	}
@@ -131,6 +145,17 @@ public class GameController {
 				|| worldPowerOrder.get(nextPowerIndex) == WorldPowerName.UNKNOWN)
 			return WorldPowerName.SOVIET_UNION;
 		return worldPowerOrder.get(nextPowerIndex);
+	}
+	
+	public boolean requestPurchaseUnits(PurchaseOrder order) {
+		WorldPower currentPower = wp.getPower(activePower);
+		if(order.getTotalCost() > currentPower.getStartingIpcIncome() + currentPower.getIpcSavings())
+			return false;
+		if(order.getTotalNumUnits() > currentPower.getUnitPlacementCount())
+			return false;
+		
+		currentPurchaseOrder = order;
+		return true;
 	}
 	
 	public static void main(String[] args) {

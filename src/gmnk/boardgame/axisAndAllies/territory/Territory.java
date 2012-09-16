@@ -1,6 +1,7 @@
 package gmnk.boardgame.axisAndAllies.territory;
 
 import gmnk.boardgame.axisAndAllies.units.StationedGroup;
+import gmnk.boardgame.axisAndAllies.units.UnitName;
 import gmnk.boardgame.axisAndAllies.units.UnitUtils;
 import gmnk.boardgame.axisAndAllies.worldPowers.WorldPowerJsonDeserializer;
 import gmnk.boardgame.axisAndAllies.worldPowers.WorldPowerName;
@@ -84,6 +85,13 @@ public class Territory {
  		}else{
  			return new StationedGroup(this, wpn);
  		}
+ 	}
+ 	
+ 	public int getUnitPlacementCount(WorldPowerName power) {
+ 		LinkedHashMap<UnitName, Integer> units = unitsStationed.get(power).getUnitCount();
+ 		if(units.containsKey(UnitName.FACTORY) && units.get(UnitName.FACTORY) > 0)
+ 			return ipcValue;
+ 		return 0;
  	}
  	
  	public void removeAllUnitsStationed() {

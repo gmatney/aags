@@ -1,5 +1,7 @@
 package gmnk.boardgame.axisAndAllies.worldPowers;
 
+import gmnk.boardgame.axisAndAllies.territory.Territory;
+
 import java.awt.Color;
 import java.util.ArrayList;
 
@@ -14,18 +16,18 @@ public class WorldPower {
 	private int startingIpcIncome;
 	private int currentIpcIncome;
 	private int ipcSavings;
-	private ArrayList<String> controlledTerritories;
-	private String capitalTerritory;
+	private ArrayList<Territory> controlledTerritories;
+	private Territory capitalTerritory;
 	private Color guiColor;
 	
-	public WorldPower(WorldPowerName name, Faction faction,int startingIpcIncome, String capitalTerritory, Color guiColor){
+	public WorldPower(WorldPowerName name, Faction faction,int startingIpcIncome, Territory capitalTerritory, Color guiColor){
 		this.name = name;
 		this.faction = faction;
 		this.startingIpcIncome = startingIpcIncome;
 		this.capitalTerritory  = capitalTerritory;
 		this.currentIpcIncome  = this.startingIpcIncome;
 		this.ipcSavings        = this.startingIpcIncome;
-		controlledTerritories  = new ArrayList<String>();
+		controlledTerritories  = new ArrayList<Territory>();
 		this.guiColor          = guiColor;
 	}
 	public Faction getFaction() {
@@ -49,14 +51,24 @@ public class WorldPower {
 	public void setIpcSavings(int ipcSavings) {
 		this.ipcSavings = ipcSavings;
 	}
-	public void addTerritory(String t){
+	public void addTerritory(Territory t){
 		controlledTerritories.add(t);
 	}
 	public String removeTerritory(String t){
 		controlledTerritories.remove(t);
 		return t;
 	}
-	public String getCapitalTerritory(){
+	public ArrayList<Territory> getControlledTerritories(){
+		return controlledTerritories;
+	}
+	public int getUnitPlacementCount() {
+		int total = 0;
+		for(Territory t : controlledTerritories) {
+			total += t.getUnitPlacementCount(name);
+		}
+		return total;
+	}
+	public Territory getCapitalTerritory(){
 		return capitalTerritory;
 	}
 	public Color getColor() {

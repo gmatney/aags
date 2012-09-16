@@ -25,6 +25,14 @@ public class PurchaseOrder {
 		return total;
 	}
 	
+	public int getTotalNumUnits() {
+		int total = 0;
+		for(UnitName unit : units.keySet()) {
+			total += units.get(unit);
+		}
+		return total;
+	}
+	
 	public void addUnit(UnitName unit) {
 		if(units.containsKey(unit)) {
 			units.put(unit, units.get(unit) + 1);

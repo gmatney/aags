@@ -1,6 +1,7 @@
 package gmnk.boardgame.axisAndAllies.worldPowers;
 
 import gmnk.boardgame.axisAndAllies.gameController.EnumInterpreter;
+import gmnk.boardgame.axisAndAllies.territory.Territory;
 import gmnk.boardgame.axisAndAllies.territory.World;
 import gmnk.boardgame.axisAndAllies.units.StationedGroup;
 
@@ -29,29 +30,29 @@ public class WorldPowerJsonDeserializer implements JsonDeserializer<WorldPowers>
 	private WorldPowers deserialize(JsonElement json) throws JsonParseException {
 		log.debug("Inside WorldPowerDeserializer");
 		WorldPowers wps = new WorldPowers();
-		JsonArray worldPowers = json.getAsJsonObject().get("WorldPower").getAsJsonArray();
-		log.debug("Found "+worldPowers.size()+" WorldPower JSON Objects");
-		
-		Iterator<JsonElement> it = worldPowers.iterator();
-		
-		while(it.hasNext()){
-			JsonObject worldPower = it.next().getAsJsonObject();
-			WorldPowerName worldPowerName = EnumInterpreter.getWorldPowerName( 
-					worldPower.get("WorldPowerName").getAsString());
-			Faction faction = EnumInterpreter.getFaction(
-					worldPower.get("Faction").getAsString()); 
-			int startingIncome = worldPower.get("StartingIncome").getAsInt();
-	        Color guiColor = new Color(Integer.decode(worldPower.get("GuiColor").getAsString()));
-	        guiColor = new Color(guiColor.getRed(), guiColor.getGreen(), guiColor.getBlue(), 180);
-			String capitalTerritory = World.getStandardizedTerritoryKey(
-					worldPower.get("capitalTerritory").getAsString());
-			log.info("Loading in WorldPower named '"+worldPowerName+"'");
-			WorldPower wp = new WorldPower( worldPowerName,faction,startingIncome,capitalTerritory,guiColor);
-			//CANNOT POPULATE WORLD ELEMENT INDIRECTLY NOW
-			//WOULD NEED TO DO IF WANT TO USE
-			wps.addWorldPower(wp);
-		}
-		
+//		JsonArray worldPowers = json.getAsJsonObject().get("WorldPower").getAsJsonArray();
+//		log.debug("Found "+worldPowers.size()+" WorldPower JSON Objects");
+//		
+//		Iterator<JsonElement> it = worldPowers.iterator();
+//		
+//		while(it.hasNext()){
+//			JsonObject worldPower = it.next().getAsJsonObject();
+//			WorldPowerName worldPowerName = EnumInterpreter.getWorldPowerName( 
+//					worldPower.get("WorldPowerName").getAsString());
+//			Faction faction = EnumInterpreter.getFaction(
+//					worldPower.get("Faction").getAsString()); 
+//			int startingIncome = worldPower.get("StartingIncome").getAsInt();
+//	        Color guiColor = new Color(Integer.decode(worldPower.get("GuiColor").getAsString()));
+//	        guiColor = new Color(guiColor.getRed(), guiColor.getGreen(), guiColor.getBlue(), 180);
+//			Territory capitalTerritory = w.getTerritoryByName(
+//					worldPower.get("capitalTerritory").getAsString());
+//			log.info("Loading in WorldPower named '"+worldPowerName+"'");
+//			WorldPower wp = new WorldPower( worldPowerName,faction,startingIncome,capitalTerritory,guiColor);
+//			//CANNOT POPULATE WORLD ELEMENT INDIRECTLY NOW
+//			//WOULD NEED TO DO IF WANT TO USE
+//			wps.addWorldPower(wp);
+//		}
+//		
 		return wps;
 	}
 	public WorldPowers deserialize(JsonElement json,World w) throws JsonParseException {
@@ -71,7 +72,7 @@ public class WorldPowerJsonDeserializer implements JsonDeserializer<WorldPowers>
 			int startingIncome = worldPower.get("StartingIncome").getAsInt(); 
 			Color guiColor = new Color(Integer.decode(worldPower.get("GuiColor").getAsString()));
 			guiColor = new Color(guiColor.getRed(), guiColor.getGreen(), guiColor.getBlue(), 180);
-			String capitalTerritory = World.getStandardizedTerritoryKey(
+			Territory capitalTerritory = w.getTerritoryByName(
 					worldPower.get("CapitalTerritory").getAsString());
 			log.info("Loading in WorldPower named '"+worldPowerName+"'");
 			WorldPower wp = new WorldPower( worldPowerName,faction,startingIncome,capitalTerritory,guiColor);
@@ -81,17 +82,17 @@ public class WorldPowerJsonDeserializer implements JsonDeserializer<WorldPowers>
 			JsonArray startingTerr = worldPower.get("TerritoryControlled").getAsJsonArray();
 			for(int i=0; i<startingTerr.size();i++){
 				JsonObject terr = startingTerr.get(i).getAsJsonObject();
-				String terrName = World.getStandardizedTerritoryKey(terr.get("TerritoryName").getAsString()); 
-				wp.addTerritory(terrName);
+				Territory territory = w.getTerritoryByName(terr.get("TerritoryName").getAsString()); 
+				wp.addTerritory(territory);
 				JsonArray unitsStationed = terr.get("UnitsStationed").getAsJsonArray();
-				StationedGroup sg = new StationedGroup(w.getTerritoryByName(terrName),worldPowerName);
+				StationedGroup sg = new StationedGroup(territory,worldPowerName);
 				for(JsonElement unitElem : unitsStationed){
 					JsonObject unit = unitElem.getAsJsonObject();
 					String type = unit.get("type").getAsString();
 					int quantity = unit.get("quantity").getAsInt();
 					sg.addUnit(EnumInterpreter.getUnitName(type), quantity);
 				}
-				w.addStationedGroupToTerritory(sg, terrName);
+				w.addStationedGroupToTerritory(sg, territory.getName());
 			}
 			
 			

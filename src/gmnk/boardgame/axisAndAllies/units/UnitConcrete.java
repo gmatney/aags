@@ -14,10 +14,14 @@ public class UnitConcrete {
 	private Territory territorySource;
 	private int remainingHitpoints;
 
+	// TODO: should units know where they are?
 	public UnitConcrete(UnitName type, Territory territorySource){
 		this.territorySource = territorySource;
 		profile = EnumInterpreter.getUnitProfile(type);
-		
+	}
+	public UnitConcrete(UnitName type){
+		this.territorySource = null;
+		profile = EnumInterpreter.getUnitProfile(type);
 	}
 	
 	public UnitName getType() {

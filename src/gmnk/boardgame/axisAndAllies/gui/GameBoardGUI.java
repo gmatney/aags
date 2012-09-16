@@ -275,7 +275,7 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 				DrawUtils.fillRect(territory.getCenter().x + 130 * powerCounter, territory.getCenter().y, 130, 15 * numRows + 5);
 				g2d.setColor(Color.black);
 				String unitString = power.name() + "\n";
-				LinkedHashMap<UnitName, Integer> groupUnits = stationedGroup.getStationedUnits(); 
+				LinkedHashMap<UnitName, Integer> groupUnits = stationedGroup.getUnitCount(); 
 				for(UnitName unit : groupUnits.keySet()) {
 					unitString += unit.name() + "  " + groupUnits.get(unit) + "\n";
 				}
