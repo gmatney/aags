@@ -18,12 +18,12 @@ import org.apache.log4j.Logger;
 
 public class StationedGroup {
 	private static Logger log = Logger.getLogger(StationedGroup.class);
-	private WorldPowerName worldPowerAllegence;
-	private ArrayList<UnitConcrete> units         = new ArrayList<UnitConcrete>();
+	private WorldPowerName worldPowerAllegience;
+	private ArrayList<UnitConcrete> units = new ArrayList<UnitConcrete>();
 	private Territory station;
 	
-	public StationedGroup(Territory station, WorldPowerName worldPowerAllegence){
-		this.worldPowerAllegence = worldPowerAllegence;
+	public StationedGroup(Territory station, WorldPowerName worldPowerAllegience){
+		this.worldPowerAllegience = worldPowerAllegience;
 		this.station = station;
 	}
 	
@@ -34,6 +34,9 @@ public class StationedGroup {
 		for(int i = 0; i < quantity; i++) {
 			units.add(new UnitConcrete(name));
 		}
+	}
+	public void removeUnit(UnitConcrete unit) {
+		units.remove(unit);
 	}
 	
 	public void setUnitsStationed(ArrayList<UnitConcrete> units){
@@ -48,19 +51,19 @@ public class StationedGroup {
 		}
 	}
 	public WorldPowerName getWorldPowerAllegence(){
-		return worldPowerAllegence;
+		return worldPowerAllegience;
 	}
 	public ArrayList<UnitConcrete> getStationedUnits(){
 		return units;
 	}
 	public int getNumberOfTypesOfUnitsStationed(){
-		return units.size();
+		return getUnitCount().keySet().size();
 	}
 	@Override
 	public String toString(){
 		StringBuilder sb = new StringBuilder();
 		sb.append("StationedGroup[\npower='");
-		sb.append(worldPowerAllegence);
+		sb.append(worldPowerAllegience);
 		sb.append("\n'Units={");
 		ArrayList<UnitName> listedUnits = new ArrayList<UnitName>();
 		for(UnitConcrete unit : units) {
@@ -69,7 +72,7 @@ public class StationedGroup {
 				sb.append("\n\t");
 				sb.append(name);
 				sb.append(":");
-				sb.append(getNumUnit(name));
+				sb.append(getNumUnitByName(name));
 				listedUnits.add(name);
 			}
 		}
@@ -85,7 +88,7 @@ public class StationedGroup {
 		for(UnitConcrete unit : units) {
 			UnitName name = unit.getProfile().getUnitName();
 			if(!map.keySet().contains(name)) {
-				map.put(name, getNumUnit(name));
+				map.put(name, getNumUnitByName(name));
 			}
 		}
 		return map;
@@ -128,7 +131,7 @@ public class StationedGroup {
 		return antiAirUnits;
 	}
 	
-	public int getNumUnit(UnitName unitName) {
+	public int getNumUnitByName(UnitName unitName) {
 		int counter = 0;
 		for(UnitConcrete unit : units) {
 			if(unit.getProfile().getUnitName() == unitName) {
@@ -136,6 +139,15 @@ public class StationedGroup {
 			}
 		}
 		return counter;
+	}
+	public ArrayList<UnitConcrete> getUnitsByName(UnitName unitName) {
+		ArrayList<UnitConcrete> unitList = new ArrayList<UnitConcrete>();
+		for(UnitConcrete unit : units) {
+			if(unit.getProfile().getUnitName() == unitName) {
+				unitList.add(unit);
+			}
+		}
+		return unitList;
 	}
 
 	public Territory getStation() {

@@ -13,6 +13,7 @@ public class UnitConcrete {
 	private UnitProfile profile;
 	private Territory territorySource;
 	private int remainingHitpoints;
+	private int movementPoints;
 
 	// TODO: should units know where they are?
 	public UnitConcrete(UnitName type, Territory territorySource){
@@ -34,8 +35,17 @@ public class UnitConcrete {
 	public Territory getTerritorySource(){
 		return territorySource;
 	}
+	public void setTerritorySource(Territory territorySource) {
+		this.territorySource = territorySource;
+	}
 	public int getRemainingHitpoints() {
 		return remainingHitpoints;
+	}
+	public int getMovementPoints() {
+		return movementPoints;
+	}
+	public void setMovementPoints(int movementPoints) {
+		this.movementPoints = movementPoints;
 	}
 
 	/**
@@ -51,6 +61,7 @@ public class UnitConcrete {
 	public boolean isDead(){
 		return remainingHitpoints<=0;
 	}
+
 	
 	
 	

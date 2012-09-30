@@ -5,8 +5,12 @@ import gmnk.boardgame.axisAndAllies.GamePhase;
 import gmnk.boardgame.axisAndAllies.PurchaseOrder;
 import gmnk.boardgame.axisAndAllies.territory.Territory;
 import gmnk.boardgame.axisAndAllies.territory.World;
+import gmnk.boardgame.axisAndAllies.units.StationedGroup;
 import gmnk.boardgame.axisAndAllies.units.UnitConcrete;
+import gmnk.boardgame.axisAndAllies.units.UnitName;
+import gmnk.boardgame.axisAndAllies.units.sea.Transport;
 import gmnk.boardgame.axisAndAllies.units.types.LandUnit;
+import gmnk.boardgame.axisAndAllies.units.types.SeaUnit;
 import gmnk.boardgame.axisAndAllies.worldPowers.Players;
 import gmnk.boardgame.axisAndAllies.worldPowers.WorldPower;
 import gmnk.boardgame.axisAndAllies.worldPowers.WorldPowerJsonDeserializer;
@@ -82,6 +86,7 @@ public class GameController {
 		for(int i = 0; i < WorldPowerName.values().length; i++) {
 			worldPowerOrder.addLast(WorldPowerName.values()[i]);
 		}
+		resetMovementPoints(activePower);
 	}
 	public World getWorld(){
 		return w;
@@ -96,6 +101,7 @@ public class GameController {
 			switch(gamePhase) {
 				case PURCHASE_UNITS:
 					activePower = getNextWorldPower(activePower);
+					resetMovementPoints(activePower);
 					currentPurchaseOrder = null;
 				case COMBAT_MOVEMENT:
 				case COMBAT:
@@ -107,18 +113,47 @@ public class GameController {
 		}
 	}
 	
+	public void resetMovementPoints(WorldPowerName power) {
+		for(Territory t : w.getTerritories().values()) {
+			StationedGroup group = t.getUnitsStationed(power);
+			for(UnitConcrete unit : group.getUnits()) {
+				unit.setMovementPoints(unit.getProfile().getMove());
+			}
+		}
+	}
+	
 	// TODO 
-	public boolean combatMoveUnit(UnitConcrete unit, ArrayList<Territory> path) {
+	public boolean requestMoveUnit(UnitConcrete unit, Territory source, Territory destination) {
 		// First do some validation to ensure that the unit can physically make the move.
-		if(unit.getTerritorySource() != path.get(0)) {
+		if(!source.getNeighbors().contains(destination)) {
 			return false;
 		}
-		for(int i = 0; i < path.size() - 1; i++) {
-			if(!path.get(i).getNeighbors().contains(path.get(i + 1)))
-				return false;
+		if(unit.getMovementPoints() <= 0) {
+			return false;
 		}
-		if(unit.getProfile() instanceof LandUnit) {
-
+		
+		// LandUnit -> Land or SeaUnit -> Sea
+		if(unit.getProfile() instanceof LandUnit && !destination.isSeaZone()
+				|| unit.getProfile() instanceof SeaUnit && destination.isSeaZone()) {
+			source.removeUnit(activePower, unit);
+			destination.addUnit(activePower, unit);
+			unit.setTerritorySource(destination);
+			unit.setMovementPoints(unit.getMovementPoints() - 1);
+			return true;
+		}
+		// LandUnit -> Sea (transport)
+		else if(unit.getProfile() instanceof LandUnit && destination.isSeaZone()) {
+			ArrayList<UnitConcrete> transports = destination.getUnitsStationed(activePower).getUnitsByName(UnitName.TRANSPORT);
+			for(UnitConcrete t : transports) {
+//				if(t.tryAddCargo()) {
+//					unit.setMovementPoints(1); // All transported units can load-unload in same turn.
+//					return true;
+//				}
+			}
+		}
+		// SeaUnit -> Land (impossible)
+		else if(unit.getProfile() instanceof SeaUnit && !destination.isSeaZone()) {
+			return false; // Boats can never go on land.
 		}
 		return true;
 	}

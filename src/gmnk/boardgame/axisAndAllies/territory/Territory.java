@@ -1,6 +1,7 @@
 package gmnk.boardgame.axisAndAllies.territory;
 
 import gmnk.boardgame.axisAndAllies.units.StationedGroup;
+import gmnk.boardgame.axisAndAllies.units.UnitConcrete;
 import gmnk.boardgame.axisAndAllies.units.UnitName;
 import gmnk.boardgame.axisAndAllies.units.UnitUtils;
 import gmnk.boardgame.axisAndAllies.worldPowers.WorldPowerJsonDeserializer;
@@ -125,6 +126,16 @@ public class Territory {
  		this.unitsStationed = unitsStationed;
  	} 	
  	
+ 	public void addUnit(WorldPowerName power, UnitConcrete unit) {
+ 		StationedGroup group = new StationedGroup(this, power);
+ 		group.addUnit(unit);
+ 		addUnitsStationed(group);
+ 	}
+ 	
+ 	public void removeUnit(WorldPowerName power, UnitConcrete unit) {
+ 		StationedGroup group = unitsStationed.get(power);
+ 		group.removeUnit(unit);
+ 	}
     
     public void addNeighbor(Territory neighbor) {
         neighbors.add(neighbor);
@@ -148,6 +159,9 @@ public class Territory {
     		}
     	}
     	return false;
+    }
+    public boolean isSeaZone() {
+    	return name.startsWith("Sea Zone");
     }
     
     

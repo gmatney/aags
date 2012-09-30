@@ -5,6 +5,7 @@ import gmnk.boardgame.axisAndAllies.gameController.GameController;
 import gmnk.boardgame.axisAndAllies.territory.Territory;
 import gmnk.boardgame.axisAndAllies.territory.World;
 import gmnk.boardgame.axisAndAllies.units.StationedGroup;
+import gmnk.boardgame.axisAndAllies.units.UnitConcrete;
 import gmnk.boardgame.axisAndAllies.units.UnitName;
 import gmnk.boardgame.axisAndAllies.worldPowers.WorldPowerName;
 
@@ -34,6 +35,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
@@ -65,7 +67,6 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 	int activeTerritory;
 	String gameMode = "Edit";
 	GameController gameController;
-	World world;
 
 	public GameBoardGUI() {
 		KL newKeyListener = new KL();
@@ -92,7 +93,6 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 
 		try {
 			gameController.initializeGame();
-			world = gameController.getWorld();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -125,8 +125,8 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 	// Prints the config to the console.
 	public void saveTerritoryConfig() {
 		for(int i = 1; i < 130; i++) {
-			if(world.getTerritoryById(i) != null)
-				log(world.getTerritoryById(i).toConfigString());
+			if(gameController.getWorld().getTerritoryById(i) != null)
+				log(gameController.getWorld().getTerritoryById(i).toConfigString());
 		}
 	}
 
@@ -163,7 +163,7 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 		if(activeTerritory == 0){
 			return null;
 		}
-		return world.getTerritoryById(activeTerritory);
+		return gameController.getWorld().getTerritoryById(activeTerritory);
 	}
 
 
@@ -210,6 +210,15 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 			g2d.drawString(gameController.activePower.toString(), getWidth() / 2 - 50, 40);
 			g2d.setFont(defaultFont);
 			g2d.drawString(gameController.gamePhase.toString(), getWidth() / 2 - 50, 60);
+			switch(gameController.gamePhase) {
+				case PURCHASE_UNITS:
+					showPurchaseUnitsScreen();
+				case COMBAT_MOVEMENT:
+				case COMBAT:
+				case NONCOMBAT_MOVEMENT:
+				case PLACE_UNITS:
+			}
+			addTerritoryInfoOverlay();
 		}
 	}
 	
@@ -257,6 +266,10 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 		int y = (int) (original.y * (1 + cam.getZoomFactor() / 10) - cam.getY());
 		return new Point(x, y);
 	}
+	
+	private void showPurchaseUnitsScreen() {
+		
+	}
 
 	public void enableUnitCountToTerritories(boolean enableUnitCountToTerritories){
 		this.enableUnitCountToTerritories = enableUnitCountToTerritories;
@@ -265,7 +278,7 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 
 	public void addUnitCountToTerritories(){
 		// Unit count in territories
-		for(Territory territory : world.getTerritories().values()) {
+		for(Territory territory : gameController.getWorld().getTerritories().values()) {
 			HashMap<WorldPowerName, StationedGroup> units = territory.getUnitsStationed();
 			int powerCounter = 0;
 			for(WorldPowerName power : units.keySet()) {
@@ -322,12 +335,35 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 		Territory mouseTerritory = getActiveTerritory();
 		if(mouseTerritory != null) {
 			g2d.drawString("Active territory: " + activeTerritory + " (" 
-					+ world.getTerritoryById(activeTerritory).getName() + ")", textHorzPos, textVertPos+=textMov);
+					+ gameController.getWorld().getTerritoryById(activeTerritory).getName() + ")", textHorzPos, textVertPos+=textMov);
 		}
 		g2d.drawString("You are in " + gameMode + " mode", textHorzPos, (textVertPos+=textMov));
 		g2d.drawString("  Press N to print a new config to the console", textHorzPos, (textVertPos+=textMov));
 		g2d.drawString("  Click on a territory to define the center", textHorzPos, (textVertPos+=textMov));
 		g2d.drawString("  Click and drag between two territories to toggle neighbors", textHorzPos, (textVertPos+=textMov));
+	}
+	
+	private void addTerritoryInfoOverlay() {
+		int textHorzPos = 5;
+		int textVertPos = 5;
+		int textMov = 15;
+		
+		Territory t = getActiveTerritory();
+		if(t != null) {
+			g2d.setColor(Color.white);
+			g2d.fillRect(0, 0, 350, 340);
+			g2d.setColor(Color.black);
+			g2d.drawString("Territory: " + t.getName(), textHorzPos, (textVertPos+=textMov));
+			g2d.drawString("IPC value: " + t.getIpcValue(), textHorzPos, (textVertPos+=textMov));
+			g2d.drawString("Is Sea Zone: " + t.isSeaZone(), textHorzPos, (textVertPos+=textMov));
+			g2d.drawString("Has Victory City: " + t.hasVictoryCity(), textHorzPos, (textVertPos+=textMov));
+			StationedGroup group = t.getUnitsStationed(gameController.activePower);
+			g2d.drawString("Active Power Units: ", textHorzPos, (textVertPos+=textMov));
+			for(UnitConcrete unit : group.getUnits()) {
+				g2d.drawString("  " + unit.getProfile().getUnitName(), textHorzPos, (textVertPos+=textMov));
+				g2d.drawString("  Movement Points: " + unit.getMovementPoints(), textHorzPos, (textVertPos+=textMov));
+			}
+		}
 	}
 
 
@@ -374,17 +410,17 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 			int mouseX = e.getX() + cam.getX();
 			int mouseY = e.getY() + cam.getY();
 			if(gameMode.equals("Edit")) {
-				Territory clickedTerritory = world.getTerritoryById(activeTerritory);
+				Territory clickedTerritory = gameController.getWorld().getTerritoryById(activeTerritory);
 				if(clickedTerritory != null) {
 					clickedTerritory.setCenter(new Point(mousePos.x, mousePos.y));
 				}
 			}
 		}
 		public void mousePressed( MouseEvent e ) {
-			mouseStartDrag = world.getTerritoryById(activeTerritory);
+			mouseStartDrag = gameController.getWorld().getTerritoryById(activeTerritory);
 		}
 		public void mouseReleased( MouseEvent e ) { 
-			Territory endTerritory = world.getTerritoryById(activeTerritory); 
+			Territory endTerritory = gameController.getWorld().getTerritoryById(activeTerritory); 
 			if(endTerritory == mouseStartDrag) {
 				mouseClicked(e);
 				return;
@@ -407,9 +443,12 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 			 */
 			else if(gameMode.equals("Play")) {
 				if(endTerritory != null && mouseStartDrag != null) {
-					if(endTerritory.getNeighbors().contains(mouseStartDrag)) {
-						endTerritory.addUnitsStationed(mouseStartDrag.getUnitsStationed(gameController.activePower));
-						mouseStartDrag.removeAllUnitsStationed();
+					ArrayList<UnitConcrete> tempUnits = new ArrayList<UnitConcrete>();
+					for(UnitConcrete unit : mouseStartDrag.getUnitsStationed(gameController.activePower).getUnits()) {
+						tempUnits.add(unit);
+					}
+					for(UnitConcrete unit : tempUnits) {
+						gameController.requestMoveUnit(unit, mouseStartDrag, endTerritory);
 					}
 				}
 			}
