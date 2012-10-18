@@ -1,9 +1,14 @@
 package gmnk.boardgame.axisAndAllies.units;
 
+import java.util.ArrayList;
+
 import org.apache.log4j.Logger;
 
 import gmnk.boardgame.axisAndAllies.gameController.EnumInterpreter;
 import gmnk.boardgame.axisAndAllies.territory.Territory;
+import gmnk.boardgame.axisAndAllies.units.land.Infantry;
+import gmnk.boardgame.axisAndAllies.units.land.Tank;
+import gmnk.boardgame.axisAndAllies.units.sea.Transport;
 import gmnk.boardgame.axisAndAllies.units.types.UnitProfile;
 
 
@@ -14,17 +19,20 @@ public class UnitConcrete {
 	private Territory territorySource;
 	private int remainingHitpoints;
 	private int movementPoints;
+	private ArrayList<UnitConcrete> cargo;
 
 	// TODO: should units know where they are?
 	public UnitConcrete(UnitName type, Territory territorySource){
 		this.territorySource = territorySource;
 		profile = EnumInterpreter.getUnitProfile(type);
+		cargo = new ArrayList<UnitConcrete>();
 	}
 	public UnitConcrete(UnitName type){
 		this.territorySource = null;
 		profile = EnumInterpreter.getUnitProfile(type);
+		cargo = new ArrayList<UnitConcrete>();
 	}
-	
+
 	public UnitName getType() {
 		return profile.getUnitName();
 	}
@@ -47,6 +55,29 @@ public class UnitConcrete {
 	public void setMovementPoints(int movementPoints) {
 		this.movementPoints = movementPoints;
 	}
+	public ArrayList<UnitConcrete> getCargo() {
+		return cargo;
+	}
+
+	public boolean tryAddCargo(UnitConcrete cargoUnit) {
+		if(profile instanceof Transport) {
+			if(!(cargoUnit.profile instanceof Infantry || cargoUnit.profile instanceof Tank))
+				return false;
+			if(cargo.isEmpty()) {
+				cargo.add(cargoUnit);
+				return true;
+			}
+			else if(cargo.size() == 1) {
+				for(UnitConcrete unit : cargo) {
+					if(unit.profile instanceof Infantry) {
+						cargo.add(cargoUnit);
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
 
 	/**
  	In current rules only will be used for battleship 
@@ -62,7 +93,7 @@ public class UnitConcrete {
 		return remainingHitpoints<=0;
 	}
 
-	
-	
-	
+
+
+
 }

@@ -65,7 +65,7 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 	Point mousePos;
 	Territory mouseStartDrag;
 	int activeTerritory;
-	String gameMode = "Edit";
+	String gameMode = "Play";
 	GameController gameController;
 
 	public GameBoardGUI() {
@@ -186,11 +186,6 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 		DrawUtils.drawImage(mapImage, new Point(0, 0));
 
 		g2d.setColor(Color.red);
-		// Territory centers
-//		for(Territory t : world.getTerritories().values()) {
-//			if(t.getCenter() != null)
-//				DrawUtils.fillRect(t.getCenter().x, t.getCenter().y, 10, 10);
-//		}
 
 		// Lines connecting territories that are neighbors
 		Territory t = getActiveTerritory();
@@ -206,19 +201,19 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 		if(enableMapPositionDebugOverlay){  addMapPositionDebugOverlay();}
 
 		if(gameMode.equals("Play")) {
+			addTerritoryInfoOverlay();
 			g2d.setFont(font);
 			g2d.drawString(gameController.activePower.toString(), getWidth() / 2 - 50, 40);
 			g2d.setFont(defaultFont);
 			g2d.drawString(gameController.gamePhase.toString(), getWidth() / 2 - 50, 60);
 			switch(gameController.gamePhase) {
 				case PURCHASE_UNITS:
-					showPurchaseUnitsScreen();
+					showPurchaseUnitsScreen(g2d);
 				case COMBAT_MOVEMENT:
 				case COMBAT:
 				case NONCOMBAT_MOVEMENT:
 				case PLACE_UNITS:
 			}
-			addTerritoryInfoOverlay();
 		}
 	}
 	
@@ -267,8 +262,13 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 		return new Point(x, y);
 	}
 	
-	private void showPurchaseUnitsScreen() {
-		
+	private void showPurchaseUnitsScreen(Graphics2D g2d) {
+//		g2d.setColor(Color.black);
+//		g2d.fillRect(45, 45, getWidth() - 90, getHeight() - 90);
+//		g2d.setColor(Color.white);
+//		g2d.fillRect(50, 50, getWidth() - 100, getHeight() - 100);
+//		g2d.setColor(Color.black);
+//		g2d.drawString("Select units to purchase:", getWidth() / 2, 80);
 	}
 
 	public void enableUnitCountToTerritories(boolean enableUnitCountToTerritories){
@@ -292,7 +292,8 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 				for(UnitName unit : groupUnits.keySet()) {
 					unitString += unit.name() + "  " + groupUnits.get(unit) + "\n";
 				}
-				DrawUtils.drawString(unitString, territory.getCenter().x + 5, territory.getCenter().y);
+				DrawUtils.drawString(unitString, territory.getCenter().x + 5 + 130 * powerCounter, territory.getCenter().y);
+				powerCounter++;
 			}
 		}
 	}
@@ -437,10 +438,7 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 					}
 				}
 			}
-			/* TODO: most of this logic should probably be in gameController, the gui should send a 
-			 * "request to move units" for example, and the gameController can return a response with 
-			 * success/failure and reason.
-			 */
+
 			else if(gameMode.equals("Play")) {
 				if(endTerritory != null && mouseStartDrag != null) {
 					ArrayList<UnitConcrete> tempUnits = new ArrayList<UnitConcrete>();

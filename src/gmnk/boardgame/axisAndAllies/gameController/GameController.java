@@ -8,7 +8,9 @@ import gmnk.boardgame.axisAndAllies.territory.World;
 import gmnk.boardgame.axisAndAllies.units.StationedGroup;
 import gmnk.boardgame.axisAndAllies.units.UnitConcrete;
 import gmnk.boardgame.axisAndAllies.units.UnitName;
+import gmnk.boardgame.axisAndAllies.units.sea.AircraftCarrier;
 import gmnk.boardgame.axisAndAllies.units.sea.Transport;
+import gmnk.boardgame.axisAndAllies.units.types.AirUnit;
 import gmnk.boardgame.axisAndAllies.units.types.LandUnit;
 import gmnk.boardgame.axisAndAllies.units.types.SeaUnit;
 import gmnk.boardgame.axisAndAllies.worldPowers.Players;
@@ -22,6 +24,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 import org.apache.log4j.Logger;
@@ -139,16 +142,37 @@ public class GameController {
 			destination.addUnit(activePower, unit);
 			unit.setTerritorySource(destination);
 			unit.setMovementPoints(unit.getMovementPoints() - 1);
+			if(unit.getProfile() instanceof Transport
+					|| unit.getProfile() instanceof AircraftCarrier) {
+				for(UnitConcrete cargo : unit.getCargo()) {
+					source.removeUnit(activePower, cargo);
+					destination.addUnit(activePower, cargo);
+					cargo.setTerritorySource(destination);
+				}
+			}
 			return true;
 		}
 		// LandUnit -> Sea (transport)
-		else if(unit.getProfile() instanceof LandUnit && destination.isSeaZone()) {
+		else if(unit.getProfile() instanceof LandUnit && destination.isSeaZone() && !source.isSeaZone()) {
 			ArrayList<UnitConcrete> transports = destination.getUnitsStationed(activePower).getUnitsByName(UnitName.TRANSPORT);
 			for(UnitConcrete t : transports) {
-//				if(t.tryAddCargo()) {
-//					unit.setMovementPoints(1); // All transported units can load-unload in same turn.
-//					return true;
-//				}
+				if(t.tryAddCargo(unit)) {
+					source.removeUnit(activePower, unit);
+					destination.addUnit(activePower, unit);
+					unit.setTerritorySource(destination);
+					unit.setMovementPoints(1); // All transported units can load-unload in same turn.
+					return true;
+				}
+			}
+		}
+		// AirUnit 
+		else if(unit.getProfile() instanceof AirUnit) {
+			if(checkAirUnitHasReturnPath(unit, destination)) {
+				source.removeUnit(activePower, unit);
+				destination.addUnit(activePower, unit);
+				unit.setTerritorySource(destination);
+				unit.setMovementPoints(unit.getMovementPoints() - 1);
+				return true;
 			}
 		}
 		// SeaUnit -> Land (impossible)
@@ -156,6 +180,25 @@ public class GameController {
 			return false; // Boats can never go on land.
 		}
 		return true;
+	}
+	
+	public boolean checkAirUnitHasReturnPath(UnitConcrete unit, Territory source) {
+		HashSet<Territory> reachableTerritories = getTerritoriesInRange(source, unit.getMovementPoints() - 1);
+		for(Territory t : reachableTerritories) {
+			// TODO: verify that air unit can land in a territory in range.
+		}
+		return true;
+	}
+	
+	public HashSet<Territory> getTerritoriesInRange(Territory source, int movementPoints) {
+		HashSet<Territory> territories = new HashSet<Territory>();
+		territories.add(source);
+		if(movementPoints > 0) {
+			for(Territory neighbor : source.getNeighbors()) {
+				territories.addAll(getTerritoriesInRange(neighbor, movementPoints - 1));
+			}
+		}
+		return territories;
 	}
 	
 	public boolean isTurnOver() {
