@@ -26,7 +26,7 @@ public class WorldPower {
 		this.startingIpcIncome = startingIpcIncome;
 		this.capitalTerritory  = capitalTerritory;
 		this.currentIpcIncome  = this.startingIpcIncome;
-		this.ipcSavings        = this.startingIpcIncome;
+		this.ipcSavings        = 0;
 		controlledTerritories  = new ArrayList<Territory>();
 		this.guiColor          = guiColor;
 	}

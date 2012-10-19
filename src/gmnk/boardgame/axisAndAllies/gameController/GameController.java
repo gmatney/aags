@@ -236,6 +236,10 @@ public class GameController {
 		return true;
 	}
 	
+	public PurchaseOrder getPurchaseOrder() {
+		return currentPurchaseOrder;
+	}
+	
 	public static void main(String[] args) {
 		try{
 			

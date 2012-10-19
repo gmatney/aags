@@ -19,7 +19,7 @@ public class PurchaseOrder {
 		for(UnitName unit : units.keySet()) {
 			UnitProfile profile = EnumInterpreter.getUnitProfile(unit);
 			if(profile != null && profile.getUnitName() != UnitName.UNKNOWN) {
-				total += profile.getCost();
+				total += profile.getCost() * units.get(unit);
 			}
 		}
 		return total;
@@ -61,4 +61,13 @@ public class PurchaseOrder {
 			units.put(unit, Math.max(0, currentAmount - amount));
 		}
 	} 
+	
+	@Override
+	public String toString() {
+		String result = "";
+		for(UnitName unit : units.keySet()) {
+			result += unit.toString() + " : " + units.get(unit) + "\n";
+		}
+		return result;
+	}
 }

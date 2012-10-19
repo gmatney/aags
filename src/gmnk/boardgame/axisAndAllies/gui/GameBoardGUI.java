@@ -1,18 +1,24 @@
 package gmnk.boardgame.axisAndAllies.gui;
 
 import gmnk.boardgame.axisAndAllies.CONSTANTS;
+import gmnk.boardgame.axisAndAllies.PurchaseOrder;
+import gmnk.boardgame.axisAndAllies.gameController.EnumInterpreter;
 import gmnk.boardgame.axisAndAllies.gameController.GameController;
 import gmnk.boardgame.axisAndAllies.territory.Territory;
 import gmnk.boardgame.axisAndAllies.territory.World;
 import gmnk.boardgame.axisAndAllies.units.StationedGroup;
 import gmnk.boardgame.axisAndAllies.units.UnitConcrete;
 import gmnk.boardgame.axisAndAllies.units.UnitName;
+import gmnk.boardgame.axisAndAllies.units.types.UnitProfile;
 import gmnk.boardgame.axisAndAllies.worldPowers.WorldPowerName;
 
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Polygon;
@@ -40,8 +46,17 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import javax.imageio.ImageIO;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.Timer;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import org.apache.log4j.Logger;
 
@@ -52,6 +67,8 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 	public static final int WORLD_HEIGHT = 700;
 	private boolean enableMapPositionDebugOverlay = false; 
 	private boolean enableUnitCountToTerritories  = true;
+	private JDialog purchaseUnitsPanel;
+	private boolean isPurchaseUnitsPanelVisible = false;
 
 	private Graphics2D g2d;
 	private Timer time;
@@ -208,8 +225,16 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 			g2d.drawString(gameController.gamePhase.toString(), getWidth() / 2 - 50, 60);
 			switch(gameController.gamePhase) {
 				case PURCHASE_UNITS:
-					showPurchaseUnitsScreen(g2d);
+					if(!isPurchaseUnitsPanelVisible) {
+						isPurchaseUnitsPanelVisible = true;
+						purchaseUnitsPanel = new PurchaseUnitsPanel(this);
+						purchaseUnitsPanel.setVisible(true);
+					}
+					break;
 				case COMBAT_MOVEMENT:
+					purchaseUnitsPanel = null;
+					isPurchaseUnitsPanelVisible = false;
+					break;
 				case COMBAT:
 				case NONCOMBAT_MOVEMENT:
 				case PLACE_UNITS:
@@ -260,15 +285,6 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 		int x = (int) (original.x * (1 + cam.getZoomFactor() / 10) - cam.getX());
 		int y = (int) (original.y * (1 + cam.getZoomFactor() / 10) - cam.getY());
 		return new Point(x, y);
-	}
-	
-	private void showPurchaseUnitsScreen(Graphics2D g2d) {
-//		g2d.setColor(Color.black);
-//		g2d.fillRect(45, 45, getWidth() - 90, getHeight() - 90);
-//		g2d.setColor(Color.white);
-//		g2d.fillRect(50, 50, getWidth() - 100, getHeight() - 100);
-//		g2d.setColor(Color.black);
-//		g2d.drawString("Select units to purchase:", getWidth() / 2, 80);
 	}
 
 	public void enableUnitCountToTerritories(boolean enableUnitCountToTerritories){
@@ -367,6 +383,10 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 		}
 	}
 
+	public void hidePurchaseUnitsWindow() {
+		purchaseUnitsPanel.setVisible(false);
+		gameController.volunteerEndPhase();
+	}
 
 	private class KL implements KeyListener{
 		public void keyPressed(KeyEvent e) {
@@ -488,4 +508,106 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 	{
 		System.out.println(s);
 	}
+	
+    public class PurchaseUnitsPanel extends JDialog implements ActionListener {
+    	JTextArea summary;
+    	JLabel totalUnits;
+    	JLabel totalCost;
+    	ArrayList<JPanel> panels; 	
+    	GameBoardGUI parent;
+    	
+    	public PurchaseUnitsPanel(GameBoardGUI parent){
+    		this.parent = parent;
+    		this.setBackground(Color.gray);
+    		this.summary = new JTextArea(2, 20);
+    		panels = new ArrayList<JPanel>();
+    		totalUnits = new JLabel();
+    		totalCost = new JLabel();
+    		totalUnits.setText("Total Units: " + 0);
+			totalCost.setText("IPCs remaining: " + (gameController.getWorldPowers().getPower(gameController.activePower).getCurrentIpcIncome() - 0));
+
+    		this.setLayout(new GridLayout(8,2));
+    		this.setFocusable(false);
+    		this.setModal(false);
+    		
+            this.setMaximumSize(new Dimension(250,99999));
+            this.setSize(500, 300);
+            this.setTitle("Please enter your purchase order");
+            this.setVisible(true);
+            
+            String[] unitNames = {"Infantry", "Artillery", "Tank", "Fighter", "Bomber", "Submarine", "Transport", "Destroyer", "Cruiser", "Aircraft_Carrier", "Battleship", "AntiAircraftGun", "Factory"};
+            for(String unit : unitNames) {
+            	JComponent panel = makeUnitPanel(unit);
+            	panels.add((JPanel) panel);
+            	add(panel);
+            }
+            JComponent summaryArea = new JPanel(new FlowLayout());
+            summaryArea.add(totalUnits);
+            summaryArea.add(totalCost);
+            add(summaryArea);
+            JButton confirmButton = new JButton("Submit");
+            confirmButton.addActionListener(this);
+            confirmButton.setActionCommand("submit");
+            add(confirmButton);
+    	}
+    	
+    	public JComponent makeUnitPanel(String name) {
+    		JPanel panel = new JPanel(new FlowLayout());
+    		
+    		panel.add(new JLabel(name + ": "));
+
+        	JTextField amount = new JTextField(10);
+        	amount.addActionListener(this);
+        	amount.getDocument().addDocumentListener(new DocumentListener() {
+        		public void changedUpdate(DocumentEvent e) {
+        			actionPerformed(new ActionEvent(e.getClass(), 0, ""));
+        		}
+        		public void removeUpdate(DocumentEvent e) {
+        			actionPerformed(new ActionEvent(e.getClass(), 0, ""));
+        		}
+        		public void insertUpdate(DocumentEvent e) {
+        			actionPerformed(new ActionEvent(e.getClass(), 0, ""));
+        		}
+        	});
+            panel.add(amount);
+            return panel;
+    	}
+    	
+		@Override
+		public void actionPerformed(ActionEvent event) {
+			log.debug(event);
+			log.debug("ActionCommand="+event.getActionCommand());
+			
+			if(event.getActionCommand().equals("submit")) {
+				PurchaseOrder order = new PurchaseOrder();
+				for(JPanel panel : panels) {
+					JLabel name = (JLabel)panel.getComponent(0);
+					JTextField value = (JTextField)panel.getComponent(1);
+					if(!value.getText().isEmpty()) {
+						int numUnit = Integer.parseInt(value.getText());
+						order.addUnit(EnumInterpreter.getUnitName(name.getText().substring(0, name.getText().length() - 2)), numUnit);
+					}
+				}
+				gameController.requestPurchaseUnits(order);
+				parent.hidePurchaseUnitsWindow();
+			}
+			else {
+				int unitTotal = 0;
+				int costTotal = 0;
+				for(JPanel panel : panels) {
+					JLabel name = (JLabel)panel.getComponent(0);
+					JTextField value = (JTextField)panel.getComponent(1);
+					if(!value.getText().isEmpty()) {
+						int numUnit = Integer.parseInt(value.getText());
+						unitTotal += numUnit;
+						UnitProfile profile = EnumInterpreter.getUnitProfile(EnumInterpreter.getUnitName(name.getText().substring(0, name.getText().length() - 2)));
+						costTotal += profile.getCost() * numUnit;
+					}
+				}
+				totalUnits.setText("Total Units: " + unitTotal);
+				totalCost.setText("IPCs remaining: " + (gameController.getWorldPowers().getPower(gameController.activePower).getCurrentIpcIncome() - costTotal)); 
+				//this.actionPerformed(event);
+			}
+		}		
+    }
 }

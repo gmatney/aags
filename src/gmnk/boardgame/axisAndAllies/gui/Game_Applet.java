@@ -1,5 +1,6 @@
 package gmnk.boardgame.axisAndAllies.gui;
 
+import gmnk.boardgame.axisAndAllies.PurchaseOrder;
 import gmnk.boardgame.axisAndAllies.gameController.EnumInterpreter;
 import gmnk.boardgame.axisAndAllies.gui.Camera.ZOOM_MODE;
 import gmnk.boardgame.axisAndAllies.units.types.UnitProfile;
@@ -22,6 +23,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -36,11 +38,14 @@ public class Game_Applet extends JApplet {
         board = new GameBoardGUI();        
         
         OptionsPanel options = new OptionsPanel(board);
-        PurchaseUnitsPanel purchasePanel = new PurchaseUnitsPanel(board);
 
         this.getContentPane().add(BorderLayout.EAST,options);
         this.getContentPane().add(BorderLayout.CENTER,board);
-        //this.getContentPane().add(BorderLayout.CENTER,purchasePanel);
+        
+        //JOptionPane.showMessageDialog(null, purchasePanel, 
+        //        "Please Enter your purchase order", JOptionPane.OK_CANCEL_OPTION);
+        //this.add(purchasePanel);
+       // this.getContentPane().add(BorderLayout.CENTER,purchasePanel);
         this.setSize(GameBoardGUI.WORLD_WIDTH,GameBoardGUI.WORLD_HEIGHT);
         
      }
@@ -74,6 +79,7 @@ public class Game_Applet extends JApplet {
     		addZoomStyleSelector();
     		addMapPositionDebugOverlayCheckbox();
     		addUnitCountInTerritoriesCheckbox();
+    		addViewPurchaseOrderButton();
             this.setMaximumSize(new Dimension(250,99999));
             this.setVisible(true);
     	}
@@ -84,6 +90,14 @@ public class Game_Applet extends JApplet {
             button.setFocusable(false);
             this.add(button);
     	}
+    	public void addViewPurchaseOrderButton(){
+    		JButton button = new JButton("View Purchase Order");
+    		button.addActionListener(this);
+            button.setActionCommand("viewPurchaseOrder");
+            button.setFocusable(false);
+            this.add(button);
+    	}
+    	
     	
     	
     	
@@ -107,11 +121,16 @@ public class Game_Applet extends JApplet {
     	}    	
     	
     	
-    	
 		@Override
 		public void actionPerformed(ActionEvent event) {
 			log.debug(event);
 			log.debug("ActionCommand="+event.getActionCommand());
+			if(event.getActionCommand().equals("viewPurchaseOrder")) {
+				String purchaseOrder = "No purchase order has been placed";
+				if(board.gameController.getPurchaseOrder() != null)
+					purchaseOrder = board.gameController.getPurchaseOrder().toString();
+				JOptionPane.showMessageDialog(this, purchaseOrder);
+			}
 			board.actionPerformed(event);
 		}		
 	    public void addZoomStyleSelector(){
@@ -141,74 +160,6 @@ public class Game_Applet extends JApplet {
 	    	this.add(unitCountInTerritoriesCheckbox);
 		}
     	
-    }
-    
-    public class PurchaseUnitsPanel extends JPanel implements ActionListener {
-    	GameBoardGUI board;
-    	JTextArea summary;
-    	JLabel totalUnits;
-    	JLabel totalCost;
-    	ArrayList<JPanel> panels; 	
-    	
-    	public PurchaseUnitsPanel(GameBoardGUI board){
-    		this.board = board;
-    		this.setBackground(Color.gray);
-    		this.summary = new JTextArea(2, 20);
-    		panels = new ArrayList<JPanel>();
-    		totalUnits = new JLabel();
-    		totalCost = new JLabel();
-    		totalUnits.setText("Total Units: " + 0);
-			totalCost.setText("IPCs remaining: " + (board.gameController.getWorldPowers().getPower(board.gameController.activePower).getCurrentIpcIncome() - 0));
-
-    		this.setLayout(new GridLayout(8,2));
-    		this.setFocusable(false);
-    		
-            this.setMaximumSize(new Dimension(250,99999));
-            this.setVisible(true);
-            
-            String[] unitNames = {"Infantry", "Artillery", "Tank", "Fighter", "Bomber", "Submarine", "Transport", "Destroyer", "Cruiser", "Aircraft_Carrier", "Battleship", "AntiAircraftGun", "Factory"};
-            for(String unit : unitNames) {
-            	JComponent panel = makeUnitButton(unit);
-            	panels.add((JPanel) panel);
-            	add(panel);
-            }
-            JComponent summaryArea = new JPanel(new FlowLayout());
-            summaryArea.add(totalUnits);
-            summaryArea.add(totalCost);
-            add(summaryArea);
-    	}
-    	
-    	public JComponent makeUnitButton(String name) {
-    		JPanel panel = new JPanel(new FlowLayout());
-    		
-    		panel.add(new JLabel(name + ": "));
-
-        	JTextField amount = new JTextField(10);
-        	amount.addActionListener(this);
-            panel.add(amount);
-            return panel;
-    	}
-    	
-		@Override
-		public void actionPerformed(ActionEvent event) {
-			log.debug(event);
-			log.debug("ActionCommand="+event.getActionCommand());
-			int unitTotal = 0;
-			int costTotal = 0;
-			for(JPanel panel : panels) {
-				JLabel name = (JLabel)panel.getComponent(0);
-				JTextField value = (JTextField)panel.getComponent(1);
-				if(!value.getText().isEmpty()) {
-					int numUnit = Integer.parseInt(value.getText());
-					unitTotal += numUnit;
-					UnitProfile profile = EnumInterpreter.getUnitProfile(EnumInterpreter.getUnitName(name.getText().substring(0, name.getText().length() - 2)));
-					costTotal += profile.getCost() * numUnit;
-				}
-			}
-			totalUnits.setText("Total Units: " + unitTotal);
-			totalCost.setText("IPCs remaining: " + (board.gameController.getWorldPowers().getPower(board.gameController.activePower).getCurrentIpcIncome() - costTotal)); 
-			board.actionPerformed(event);
-		}		
     }
     
 }
