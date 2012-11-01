@@ -55,6 +55,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.Timer;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -68,7 +69,9 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 	private boolean enableMapPositionDebugOverlay = false; 
 	private boolean enableUnitCountToTerritories  = true;
 	private JDialog purchaseUnitsPanel;
+	private JDialog combatPanel;
 	private boolean isPurchaseUnitsPanelVisible = false;
+	private boolean isCombatPanelVisible = false;
 
 	private Graphics2D g2d;
 	private Timer time;
@@ -236,8 +239,17 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 					isPurchaseUnitsPanelVisible = false;
 					break;
 				case COMBAT:
+					if(!isCombatPanelVisible) {
+						isCombatPanelVisible = true;
+						combatPanel = new CombatPanel(this);
+						combatPanel.setVisible(true);
+					}
+					break;
 				case NONCOMBAT_MOVEMENT:
+					isCombatPanelVisible = false;
+					break;
 				case PLACE_UNITS:
+					break;
 			}
 		}
 	}
@@ -529,7 +541,6 @@ public class GameBoardGUI extends JPanel implements ActionListener {
     		this.setLayout(new GridLayout(8,2));
     		this.setFocusable(false);
     		this.setModal(false);
-    		
             this.setMaximumSize(new Dimension(250,99999));
             this.setSize(500, 300);
             this.setTitle("Please enter your purchase order");
@@ -588,8 +599,9 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 						order.addUnit(EnumInterpreter.getUnitName(name.getText().substring(0, name.getText().length() - 2)), numUnit);
 					}
 				}
-				gameController.requestPurchaseUnits(order);
-				parent.hidePurchaseUnitsWindow();
+				if(gameController.requestPurchaseUnits(order)) {
+					parent.hidePurchaseUnitsWindow();
+				}
 			}
 			else {
 				int unitTotal = 0;
@@ -609,5 +621,102 @@ public class GameBoardGUI extends JPanel implements ActionListener {
 				//this.actionPerformed(event);
 			}
 		}		
+    }
+
+    public class CombatPanel extends JDialog implements ActionListener {
+    	int casualties = 0;
+    	GameBoardGUI parent;
+    	ArrayList<JPanel> panels;
+    	
+    	public CombatPanel(GameBoardGUI parent){
+    		panels = new ArrayList<JPanel>();
+    		this.parent = parent;
+    		this.setTitle("Combat");
+    		this.setLayout(new GridLayout(1,2));
+    		this.setFocusable(false);
+    		this.setModal(false);
+            this.setMaximumSize(new Dimension(250,99999));
+            this.setSize(600, 600);
+            this.setVisible(true);
+            
+            String[] unitNames = {"Infantry", "Artillery", "Tank", "Fighter", "Bomber", "Submarine", "Transport", "Destroyer", "Cruiser", "Aircraft_Carrier", "Battleship", "AntiAircraftGun", "Factory"};
+            JPanel playerPanel = new JPanel();
+            playerPanel.setLayout(new GridLayout(16, 1));
+            playerPanel.setBorder(new EmptyBorder(10, 10, 10, 10) );
+            playerPanel.add(new JLabel("PLAYER"));
+            
+            JPanel opponentPanel = new JPanel();
+            opponentPanel.setLayout(new GridLayout(16, 1));
+            opponentPanel.setBorder(new EmptyBorder(10, 10, 10, 10) );
+            opponentPanel.add(new JLabel("OPPONENT"));
+            for(String unit : unitNames) {
+            	JComponent playerUnitPanel = makePlayerUnitPanel(unit);
+            	panels.add((JPanel) playerUnitPanel);
+            	playerPanel.add(playerUnitPanel);
+            	
+            	JComponent opponentUnitPanel = makeOpponentUnitPanel(unit);
+            	panels.add((JPanel) opponentUnitPanel);
+            	opponentPanel.add(opponentUnitPanel);
+            }
+            playerPanel.add(new JLabel("Casualties: "));
+            playerPanel.add(new JButton("Submit"));
+            opponentPanel.add(new JLabel("Casualties: "));
+
+            add(playerPanel);
+            add(opponentPanel);
+    	}
+    	
+    	public JComponent makePlayerUnitPanel(String name) {
+    		JPanel panel = new JPanel(new FlowLayout());
+    		
+    		panel.add(new JButton(name + ": "));
+
+        	JTextField amount = new JTextField(10);
+        	amount.setEditable(false);
+        	amount.addActionListener(this);
+        	amount.getDocument().addDocumentListener(new DocumentListener() {
+        		public void changedUpdate(DocumentEvent e) {
+        			actionPerformed(new ActionEvent(e.getClass(), 0, ""));
+        		}
+        		public void removeUpdate(DocumentEvent e) {
+        			actionPerformed(new ActionEvent(e.getClass(), 0, ""));
+        		}
+        		public void insertUpdate(DocumentEvent e) {
+        			actionPerformed(new ActionEvent(e.getClass(), 0, ""));
+        		}
+        	});
+            panel.add(amount);
+            return panel;
+    	}
+    	
+    	public JComponent makeOpponentUnitPanel(String name) {
+    		JPanel panel = new JPanel(new FlowLayout());
+    		
+    		panel.add(new JLabel(name + ": "));
+
+        	JTextField amount = new JTextField(10);
+        	amount.setEditable(false);
+        	amount.addActionListener(this);
+        	amount.getDocument().addDocumentListener(new DocumentListener() {
+        		public void changedUpdate(DocumentEvent e) {
+        			actionPerformed(new ActionEvent(e.getClass(), 0, ""));
+        		}
+        		public void removeUpdate(DocumentEvent e) {
+        			actionPerformed(new ActionEvent(e.getClass(), 0, ""));
+        		}
+        		public void insertUpdate(DocumentEvent e) {
+        			actionPerformed(new ActionEvent(e.getClass(), 0, ""));
+        		}
+        	});
+            panel.add(amount);
+            return panel;
+    	}
+    	
+    	@Override
+		public void actionPerformed(ActionEvent event) {
+			log.debug(event);
+			log.debug("ActionCommand="+event.getActionCommand());
+			
+    	}
     }
 }

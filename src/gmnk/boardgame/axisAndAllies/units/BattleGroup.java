@@ -108,7 +108,7 @@ public class BattleGroup {
 		int total = 0;
 		for(UnitConcrete unit : units) {
 			if(unit.getProfile().getUnitName() == UnitName.TRANSPORT) {
-
+				total += unit.getCargo().size();
 			}
 		}
 		return total;

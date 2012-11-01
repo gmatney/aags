@@ -7,6 +7,7 @@ import gmnk.boardgame.axisAndAllies.units.StationedGroup;
 import gmnk.boardgame.axisAndAllies.units.UnitConcrete;
 import gmnk.boardgame.axisAndAllies.units.UnitGroup;
 import gmnk.boardgame.axisAndAllies.units.UnitName;
+import gmnk.boardgame.axisAndAllies.units.sea.Submarine;
 import gmnk.boardgame.axisAndAllies.units.types.UnitProfile;
 
 import java.util.ArrayList;
@@ -26,9 +27,12 @@ public class CombatUtils {
         int defendingGeneralCasualties = 0;
         int defendingAirCasualties = 0;
         int defendingSeaCasualties = 0;
+        int defendingSubCasualties = 0;
         int attackingGeneralCasualties = 0;
         int attackingAirCasualties = 0;
         int attackingSeaCasualties = 0;
+        int attackingSubCasualties = 0;
+
         
         //TODO: Special combat (submarines, bombardments, etc)
         // Phase 2: general combat.
@@ -52,40 +56,57 @@ public class CombatUtils {
     		//TODO add AAGUN support 
     		
     		//ATTACKER
-	    	defendingGeneralCasualties =+ getHitsCausedByStandardAttackingGroup(attackingUnits.getLandUnits());
-	    	defendingGeneralCasualties =+ getHitsCausedByStandardAttackingGroup(attackingUnits.getAirUnits());
+	    	defendingGeneralCasualties =+ getHitsCausedByStandardGroup(attackingUnits.getUnits(), true);
+	    	defendingSubCasualties =+ getHitsCausedBySubs(attackingUnits.getUnits(), true);
 	            
 	        //DEFENDER
-	    	attackingGeneralCasualties =+ getHitsCausedByStandardDefendingGroup(defendingUnits.getLandUnits());
-	    	attackingGeneralCasualties =+ getHitsCausedByStandardDefendingGroup(defendingUnits.getAirUnits());
+	    	attackingGeneralCasualties =+ getHitsCausedByStandardGroup(defendingUnits.getUnits(), false);
+	    	attackingSubCasualties =+ getHitsCausedBySubs(defendingUnits.getUnits(), false);
     	}
         CasualtyReport casualties = new CasualtyReport(attackingGeneralCasualties, defendingGeneralCasualties,
         		attackingAirCasualties, defendingAirCasualties, attackingSeaCasualties, defendingSeaCasualties);
         return casualties;
     }
-    public int getHitsCausedByStandardAttackingGroup(ArrayList<UnitConcrete> attackers){
+    
+    public int getHitsCausedByStandardGroup(ArrayList<UnitConcrete> group, boolean attack){
         int hits = 0;
-    	for(UnitConcrete unit : attackers) {
+    	for(UnitConcrete unit : group) {
     		//TODO add check to make sure all units are standard
-        	if(rollDie() <= unit.getProfile().getAttack()){
-        		hits++;
-        	}
+    		if(!(unit.getProfile() instanceof Submarine)) {
+    			if(attack) {
+		        	if(rollDie() <= unit.getProfile().getAttack()){
+		        		hits++;
+		        	}
+    			}
+    			else {
+    				if(rollDie() <= unit.getProfile().getDefense()){
+    	        		hits++;
+    	        	}
+    			}
+    		}
+        }
+    	return hits;
+    }    
+    
+    public int getHitsCausedBySubs(ArrayList<UnitConcrete> group, boolean attack) {
+        int hits = 0;
+    	for(UnitConcrete unit : group) {
+    		//TODO add check to make sure all units are standard
+    		if(unit.getProfile() instanceof Submarine) {
+    			if(attack) {
+		        	if(rollDie() <= unit.getProfile().getAttack()){
+		        		hits++;
+		        	}
+    			}
+    			else {
+    				if(rollDie() <= unit.getProfile().getDefense()){
+    	        		hits++;
+    	        	}
+    			}
+    		}
         }
     	return hits;
     }
-    
-    public int getHitsCausedByStandardDefendingGroup(ArrayList<UnitConcrete> defenders){
-    	int hits = 0;
-    	for(UnitConcrete unit : defenders) {
-    		//TODO add check to make sure all units are standard
-        	if(rollDie() <= unit.getProfile().getDefense()){
-        		hits++;
-        	}
-        }    	
-    	return hits;
-    }
-    
-    
     
     // Rolls a standard six-sided die and returns the result.
     public int rollDie() {

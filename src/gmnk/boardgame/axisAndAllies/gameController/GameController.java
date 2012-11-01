@@ -106,10 +106,16 @@ public class GameController {
 					activePower = getNextWorldPower(activePower);
 					resetMovementPoints(activePower);
 					currentPurchaseOrder = null;
+					break;
 				case COMBAT_MOVEMENT:
+					break;
 				case COMBAT:
+					//if(currentBattle)
+					break;
 				case NONCOMBAT_MOVEMENT:
+					break;
 				case PLACE_UNITS:
+					break;
 			}
 
 			phaseStartTime = System.currentTimeMillis();
